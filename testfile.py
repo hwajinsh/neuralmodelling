@@ -29,38 +29,52 @@ plt.legend()
 plt.show()
 
 # Step 2: Define Heuristic Function to Update Belief
-def update_belief(belief_1, similarity, time):
-        
-    time_weight = (1 / time) * 10
 
-    prob_same = time_weight * similarity
-    prob_diff = time_weight * (1 - similarity)
-
-    prob_1 = belief_1 * prob_same + (1 - belief_1) * prob_diff
-    prob_2 = belief_1 * prob_diff + (1 - belief_1) * prob_same
-
-    state_1 = prob_1 / (prob_1 + prob_2)
-    return state_1
-
-# Initialize belief arrays
+# Define parameters
 belief_1 = np.zeros(num_trials)
 belief_2 = np.zeros(num_trials)
 
-# Initial belief (100% belief in State 1)
-belief_1[0] = 1.0
-belief_2[0] = 0.0
+# Time array: 1 for the first 100 trials, 30 for the last trial
+time = np.ones(num_trials)
+time[100] = 30  # 30-day delay before the 101st trial
 
+# Set all stimuli to the same value
+stimuli = np.ones(num_trials)  # All stimuli are the same (1)
+
+# Initialize beliefs
+belief_1[:50] = 1.0  # 100% belief in State 1 for trials 1-50
+belief_2[50:100] = 1.0  # 100% belief in State 2 for trials 51-100
+belief_1[100] = 0.5  # Partial belief in State 1 after the delay
+belief_2[100] = 0.5  # Partial belief in State 2 after the delay
+
+def update_belief(belief_1, similarity, time):
+    # Calculate time-weighted factors
+    time_weight = (1 / time) * 10  # Adjust time scale factor as needed
+
+    # Calculate probabilities of state transition based on similarity
+    prob_same = time_weight * similarity
+    prob_diff = time_weight * (1 - similarity)
+
+    # Update belief probabilities for state 1 and state 2
+    prob_1 = belief_1 * prob_same + (1 - belief_1) * prob_diff
+    prob_2 = belief_1 * prob_diff + (1 - belief_1) * prob_same
+
+    # Normalize belief in State 1
+    state_1 = prob_1 / (prob_1 + prob_2)
+    return state_1
+
+# Iterate over trials and update beliefs
 for i in range(1, num_trials):
-    # Determine state similarity based on stimuli
-    similarity = 1 if stimuli[i] == stimuli[i - 1] else 0
+    # Since stimuli are the same, similarity will always be 1
+    similarity = 1  # All stimuli are the same
+ 
+    # Update belief for State 1 based on previous belief and similarity
+    belief_1[i] = update_belief(belief_1[i - 1], similarity, time[i - 1])
 
-    # Calculate belief for State 1 using the heuristic function
-    belief__1[i] = update_belief(belief_1[i - 1], similarity, time[i - 1])
-    
-    # Belief for State 2 is the complement of belief in State 1
+    # Belief for State 2 is complementary to belief in State 1
     belief_2[i] = 1 - belief_1[i]
 
-# Plot the dynamic beliefs for each state across trials
+# Plot dynamic beliefs for each state across trials
 plt.figure(figsize=(10, 6))
 plt.plot(belief_1, label="Belief State 1 (Dynamic)", color="blue")
 plt.plot(belief_2, label="Belief State 2 (Dynamic)", color="orange")
@@ -68,6 +82,8 @@ plt.xlabel("Trial")
 plt.ylabel("Probability of being in state")
 plt.title("Dynamic Probabilities of Being in State 1 and State 2 Across Trials")
 plt.legend()
+plt.xlim(0, num_trials - 1)
+plt.xticks(np.arange(0, num_trials, step=10))  # Optional: Set x-ticks for clarity
 plt.show()
 
 # Step 3: Rescorla-Wagner Update for Association Strength
