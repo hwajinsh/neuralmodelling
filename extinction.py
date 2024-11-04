@@ -38,7 +38,7 @@ plt.show()
 # Step 3: Define Heuristic Function to Update Belief
 def update_belief(belief_1, similarity, time):
     
-    time_weight = 1 / time
+    time_weight = (1 / time) * 10
 
     prob_same = time_weight * similarity
     prob_diff = time_weight * (1 - similarity)
