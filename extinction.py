@@ -36,22 +36,19 @@ plt.legend()
 plt.show()
 
 # Step 3: Define Heuristic Function to Update Belief
+def update_belief(belief_1, similarity, time):
+    
+    time_weight = 1 / time
 
-## This needs major fixing lol
+    prob_same = time_weight * similarity
+    prob_diff = time_weight * (1 - similarity)
 
-def update_belief(prev_state, similarity, time_gap):
-    belief = np.zeros(3)
-    decay_factor = 0.7  # Decay factor for transitioning belief
+    prob_1 = belief_1 * prob_same + (1 - belief_1) * prob_diff
+    prob_2 = belief_1 * prob_diff + (1 - belief_1) * prob_same
 
-    if time_gap > 20:  # If large time gap, assume a shift to new context (state 3)
-        belief[2] = 1.0  # Full belief in new state
-    elif similarity < 0.5:  # If low similarity, partial shift to state 2
-        belief[prev_state] = decay_factor
-        belief[1] = 1 - decay_factor
-    else:  # Otherwise, maintain belief in current state
-        belief[prev_state] = 1.0
+    state_1 = prob_1 / (prob_1 + prob_2)
 
-    return belief
+    return state_1
 
 # Step 4: Rescorla-Wagner Update for Association Strength
 def update_association_strength(belief, prev_strength, learning_rate, reward):
@@ -60,7 +57,7 @@ def update_association_strength(belief, prev_strength, learning_rate, reward):
     return prev_strength + learning_rate * belief * prediction_error
 
 # Initialize association strengths for each state
-association_strengths = np.zeros((num_trials, 3))
+association_strengths = np.zeros((num_trials, 2))
 learning_rate = 0.1
 
 # Trial loop for updating association strengths
@@ -68,7 +65,7 @@ for trial in range(num_trials):
     reward = 1 if trial < 50 else 0  # Reward during conditioning phase only
 
     # For each state, update association strength weighted by belief
-    for state in range(3):
+    for state in range(2):
         association_strengths[trial, state] = update_association_strength(
             belief_array[trial, state], association_strengths[trial - 1, state] if trial > 0 else 0,
             learning_rate, reward
@@ -76,7 +73,7 @@ for trial in range(num_trials):
 
 # Plot association strengths for each state
 plt.figure(figsize=(10, 6))
-for state in range(3):
+for state in range(2):
     plt.plot(association_strengths[:, state], label=f"State {state+1}")
 plt.xlabel("Trial")
 plt.ylabel("Association Strength (CS-US)")
