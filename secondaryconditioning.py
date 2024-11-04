@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-## Secondary 
+## Secondary Conditioning
 
 # Parameters for the Rescorla-Wagner model
 learning_rate = 0.15  # Learning rate for stimuli (CS1, CS2)
@@ -52,3 +52,7 @@ plt.ylabel("Expectation of Reward")
 plt.title("Secondary Paradigm with Pre-Training, Training, and Result Phases")
 plt.legend()
 plt.show()
+
+# Why does the Rescorla-Wagner rule failed to produce the correct expectations?
+# Since the reward does not appear when the second stimulus is presented, the delta rule would cause w2 to become negative. 
+# In other words, in this case, the Rescorla-Wagner rule incorrectly predicts inhibitory, not excitatory, secondary conditioning.

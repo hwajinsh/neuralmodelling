@@ -1,17 +1,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# A
-# state 1 for learning (50 first trials)
-# state 2 for exitinction (50 trials)
-# potential state 3:
-# after a delay of 30 days, the animal might lead it to believe it is in State 3 
-# (or possibly State 1 again, if it "relapses" to its initial belief)
+## Extinction
 
 # Step 1: Define Belief Array
-# 50 trials for conditioning, 50 for extinction, and 1 after delay
+# 50 trials for conditioning, 50 for extinction, and 1 post-delay
 num_trials = 101
-belief_array = np.zeros((num_trials, 3))  # 3 possible states
+belief_array = np.zeros((num_trials, 2))  # 2 possible states
 
 # During conditioning phase (trials 1-50), the animal is in State 1
 belief_array[:50, 0] = 1.0  # 100% belief in State 1
@@ -19,10 +14,9 @@ belief_array[:50, 0] = 1.0  # 100% belief in State 1
 # During extinction phase (trials 51-100), the animal is in State 2
 belief_array[50:100, 1] = 1.0  # 100% belief in State 2
 
-# After delay (trial 101), assume some belief in State 1 reemerges
-belief_array[100, 0] = 0.3  # Partial return to State 1
-belief_array[100, 1] = 0.4  # Partial belief in State 2
-belief_array[100, 2] = 0.3  # New belief in State 3
+# After delay (trial 101), assume some belief in State 1 and 2 reemerges
+belief_array[100, 0] = 0.5  # Partial return to State 1
+belief_array[100, 1] = 0.5  # Partial belief in State 2
 
 # Step 2: Plot Expectation of Receiving US
 # High expectation during conditioning, lower during extinction, moderate after delay
@@ -31,7 +25,7 @@ expectation = np.zeros(num_trials)
 # Set expectations for each phase
 expectation[:50] = 1.0  # High expectation in State 1
 expectation[50:100] = 0.0  # Low expectation in State 2
-expectation[100] = 0.5  # Moderate expectation in State 3 (spontaneous recovery)
+expectation[100] = 0.5  # What do we expect? spontaneous full recovery? moderate? 
 
 plt.figure(figsize=(10, 6))
 plt.plot(expectation, label="Expectation of US")
@@ -42,6 +36,9 @@ plt.legend()
 plt.show()
 
 # Step 3: Define Heuristic Function to Update Belief
+
+## This needs major fixing lol
+
 def update_belief(prev_state, similarity, time_gap):
     belief = np.zeros(3)
     decay_factor = 0.7  # Decay factor for transitioning belief
@@ -86,5 +83,3 @@ plt.ylabel("Association Strength (CS-US)")
 plt.title("Association Strength between CS and US for Each State")
 plt.legend()
 plt.show()
-
-# array = np.concatenate(np.ones(50), 2*np.ones(50), 3*np.ones(1))
