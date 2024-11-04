@@ -29,7 +29,6 @@ plt.legend()
 plt.show()
 
 # Step 2: Define Heuristic Function to Update Belief
-
 def update_belief(belief_1, similarity, time):
         
     time_weight = (1 / time) * 10
