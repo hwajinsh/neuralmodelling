@@ -10,12 +10,12 @@ from rescorla_wagner import rescorla_wagner
 # Parameters for the Rescorla-Wagner model
 alpha = 0.15  # Learning rate for stimuli (CS1, CS2)
 num_trials_training = 200     # Trials in Training (CS1 + CS2)
-num_trials_result = 200     # Trials in Result phase for visualizing expectations
-total_trials = num_trials_training + num_trials_result
+#num_trials_result = 200     # Trials in Result phase for visualizing expectations
+total_trials = num_trials_training 
 
-stimuli_1 = np.concatenate([np.ones(num_trials_training), np.ones(num_trials_result)])
+stimuli_1 = np.concatenate([np.ones(num_trials_training)])
 stimuli_2 = np.concatenate([
-    np.tile([1, 0], num_trials_training // 2), np.ones(num_trials_result) # CS2 is present only when CS1 is not rewarded
+    np.tile([1, 0], num_trials_training // 2) # CS2 is present only when CS1 is not rewarded
 ])
 
 #stimuli_2 = np.ones(total_trials)

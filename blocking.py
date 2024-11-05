@@ -8,18 +8,18 @@ from rescorla_wagner import rescorla_wagner
 alpha = 0.15  # Learning rate for stimuli (CS1, CS2)
 num_trials_pretraining = 50  # Trials in Pre-Training (CS1 only)
 num_trials_training = 50     # Trials in Training (CS1 + CS2)
-num_trials_result = 50       # Trials in Result phase for visualizing expectations
-total_trials = num_trials_pretraining + num_trials_training + num_trials_result
+#num_trials_result = 50       # Trials in Result phase for visualizing expectations
+total_trials = num_trials_pretraining + num_trials_training
 
 # Stimuli presentation arrays for the three stages
-stimuli_1 = np.concatenate([np.ones(num_trials_pretraining), np.ones(num_trials_training), np.ones(num_trials_result)])
-stimuli_2 = np.concatenate([np.zeros(num_trials_pretraining), np.ones(num_trials_training), np.ones(num_trials_result)])
+stimuli_1 = np.concatenate([np.ones(num_trials_pretraining), np.ones(num_trials_training)])
+stimuli_2 = np.concatenate([np.zeros(num_trials_pretraining), np.ones(num_trials_training)])
 
 # Reward array (1 = reward, 0 = no reward in the Result Phase)
-rewards = np.concatenate([np.ones(num_trials_pretraining), np.ones(num_trials_training), np.ones(num_trials_result)])
+rewards = np.concatenate([np.ones(num_trials_pretraining), np.ones(num_trials_training)])
 
 # Ideal expectations in blocking: reward is always present
-ideal_expectations = np.concatenate([np.ones(num_trials_pretraining), np.ones(num_trials_training), np.ones(num_trials_result)])
+ideal_expectations = np.concatenate([np.ones(num_trials_pretraining), np.ones(num_trials_training)])
 
 # Apply Rescorla-Wagner rule
 predictions_v, weights_1, weights_2 = rescorla_wagner(stimuli_1, stimuli_2, rewards, alpha)
