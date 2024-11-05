@@ -31,7 +31,7 @@ for t in range(total_trials):
     expectations_CS2[t] = V_CS2
     
     # Total expectation
-    total_expectation = V_CS1 + V_CS2
+    total_expectation = V_CS1 * stimuli_CS1[t] + V_CS2 * stimuli_CS2[t]
     
     # Calculate prediction error (for the current trial)
     prediction_error = rewards[t] - total_expectation
