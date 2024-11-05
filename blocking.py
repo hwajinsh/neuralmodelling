@@ -1,54 +1,48 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from rescorla_wagner import rescorla_wagner
 
 ## Blocking
 
 # Parameters for the Rescorla-Wagner model
-learning_rate = 0.15  # Learning rate for stimuli (CS1, CS2)
+alpha = 0.15  # Learning rate for stimuli (CS1, CS2)
 num_trials_pretraining = 50  # Trials in Pre-Training (CS1 only)
 num_trials_training = 50     # Trials in Training (CS1 + CS2)
 num_trials_result = 50       # Trials in Result phase for visualizing expectations
 total_trials = num_trials_pretraining + num_trials_training + num_trials_result
 
 # Stimuli presentation arrays for the three stages
-stimuli_CS1 = np.concatenate([np.ones(num_trials_pretraining), np.ones(num_trials_training), np.ones(num_trials_result)])
-stimuli_CS2 = np.concatenate([np.zeros(num_trials_pretraining), np.ones(num_trials_training), np.ones(num_trials_result)])
+stimuli_1 = np.concatenate([np.ones(num_trials_pretraining), np.ones(num_trials_training), np.ones(num_trials_result)])
+stimuli_2 = np.concatenate([np.zeros(num_trials_pretraining), np.ones(num_trials_training), np.ones(num_trials_result)])
 
 # Reward array (1 = reward, 0 = no reward in the Result Phase)
 rewards = np.concatenate([np.ones(num_trials_pretraining), np.ones(num_trials_training), np.ones(num_trials_result)])
 
-# Arrays to store expectations for CS1 and CS2 over trials
-expectations_CS1 = np.zeros(total_trials)
-expectations_CS2 = np.zeros(total_trials)
+# Ideal expectations in blocking: reward is always present
+ideal_expectations = np.concatenate([np.ones(num_trials_pretraining), np.ones(num_trials_training), np.ones(num_trials_result)])
 
-# Initial expectations
-V_CS1 = 0.0
-V_CS2 = 0.0
+# Apply Rescorla-Wagner rule
+predictions_v, weights_1, weights_2 = rescorla_wagner(stimuli_1, stimuli_2, rewards, alpha)
 
-for t in range(total_trials):
-    # Store the current expectations
-    expectations_CS1[t] = V_CS1
-    expectations_CS2[t] = V_CS2
-    
-    # Total expectation
-    total_expectation = V_CS1 + V_CS2
-    
-    # Calculate prediction error (for the current trial)
-    prediction_error = rewards[t] - total_expectation
-    
-    # Update expectations based on which CS is present
-    # Update only CS1; CS2 should only be updated if it had a chance of predicting the reward.
-    V_CS1 += learning_rate * prediction_error * stimuli_CS1[t]
-    V_CS2 += learning_rate * prediction_error * stimuli_CS2[t]
-
-# Plotting the three stages with blocking effect
-plt.figure(figsize=(12, 6))
-plt.plot(expectations_CS1, label="Expectation for CS1")
-plt.plot(expectations_CS2, label="Expectation for CS2", linestyle="--")
-plt.axvline(x=num_trials_pretraining, color="grey", linestyle=":", label="Start of Training Phase")
-plt.axvline(x=num_trials_pretraining + num_trials_training, color="grey", linestyle=":", label="Start of Result Phase")
+# Plot 1: Learned predictions, ideal expectations, and stimulus 2
+plt.figure(figsize=(10, 5))
+plt.plot(predictions_v, label="Learned Predictions", color="blue")
+plt.plot(ideal_expectations, label="Ideal Expectations", color="orange")
+plt.plot(stimuli_2, label="Stimulus 2", color="green", linestyle="--")
 plt.xlabel("Trials")
-plt.ylabel("Expectation of Reward")
-plt.title("Blocking Paradigm with Pre-Training, Training, and Result Phases")
+plt.ylabel("Values")
+plt.title("Learned Predictions, Ideal Expectations, and Stimulus 2")
 plt.legend()
+plt.grid(True)
+plt.show()
+
+# Plot 2: Expectations (Weights) for both stimuli
+plt.figure(figsize=(10, 5))
+plt.plot(weights_1, label="Weight for Stimulus 1", color="purple")
+plt.plot(weights_2, label="Weight for Stimulus 2", color="orange")
+plt.xlabel("Trials")
+plt.ylabel("Weights")
+plt.title("Expectations (Weights) for Stimulus 1 and Stimulus 2")
+plt.legend()
+plt.grid(True)
 plt.show()

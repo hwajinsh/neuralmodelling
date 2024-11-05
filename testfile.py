@@ -39,7 +39,7 @@ time = np.ones(num_trials)
 time[100] = 30  # 30-day delay before the 101st trial
 
 # Set all stimuli to the same value
-stimuli = np.ones(num_trials)  # All stimuli are the same (1)
+stimuli = np.ones(num_trials)  # All stimuli are the same
 
 # Initialize beliefs
 belief_1[:50] = 1.0  # 100% belief in State 1 for trials 1-50
