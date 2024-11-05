@@ -30,49 +30,53 @@ plt.show()
 
 # Step 2: Define Heuristic Function to Update Belief
 
-# Define parameters
+# Initialize Belief Arrays
+num_trials = 101
 belief_1 = np.zeros(num_trials)
 belief_2 = np.zeros(num_trials)
 
-# Time array: 1 for the first 100 trials, 30 for the last trial
+# Set initial conditions
+belief_1[0] = 1.0  # Start with 100% belief in State 1
+belief_2[0] = 0.0
+
+# Define the time intervals (1 for each of the first 100 trials, 31 for the 101st)
 time = np.ones(num_trials)
-time[100] = 30  # 30-day delay before the 101st trial
+time[100] = 31  # 1-day trial + 30-day delay before for the last trial
 
-# Set all stimuli to the same value
-stimuli = np.ones(num_trials)  # All stimuli are the same
+# Define stimuli
+stimuli = np.concatenate([np.ones(50), np.zeros(50), np.ones(1)])
 
-# Initialize beliefs
-belief_1[:50] = 1.0  # 100% belief in State 1 for trials 1-50
-belief_2[50:100] = 1.0  # 100% belief in State 2 for trials 51-100
-belief_1[100] = 0.5  # Partial belief in State 1 after the delay
-belief_2[100] = 0.5  # Partial belief in State 2 after the delay
-
-def update_belief(belief_1, similarity, time):
-    # Calculate time-weighted factors
-    time_weight = (1 / time) * 10  # Adjust time scale factor as needed
-
-    # Calculate probabilities of state transition based on similarity
-    prob_same = time_weight * similarity
-    prob_diff = time_weight * (1 - similarity)
-
-    # Update belief probabilities for state 1 and state 2
-    prob_1 = belief_1 * prob_same + (1 - belief_1) * prob_diff
-    prob_2 = belief_1 * prob_diff + (1 - belief_1) * prob_same
-
-    # Normalize belief in State 1
-    state_1 = prob_1 / (prob_1 + prob_2)
+# Define the heuristic function with additional debug output
+def state_beliefs_heuristic(belief_state_1, state_similarity, time):
+    time_weight = (1 / time) * 10
+    prob_same_state = time_weight * state_similarity
+    prob_diff_state = time_weight * (1 - state_similarity)
+    
+    prob_state_1 = belief_state_1 * prob_same_state + (1 - belief_state_1) * prob_diff_state
+    prob_state_2 = belief_state_1 * prob_diff_state + (1 - belief_state_1) * prob_same_state
+    
+    # Normalize to calculate the probability of being in State 1
+    state_1 = prob_state_1 / (prob_state_1 + prob_state_2)
+    
+    # Debugging output to check calculations
+    print(f"time: {time}, time_weight: {time_weight}, prob_same_state: {prob_same_state}, prob_diff_state: {prob_diff_state}, state_1: {state_1}")
+    
     return state_1
 
-# Iterate over trials and update beliefs
+# Iterate over trials to update beliefs
 for i in range(1, num_trials):
-    # Since stimuli are the same, similarity will always be 1
-    similarity = 1  # All stimuli are the same
- 
-    # Update belief for State 1 based on previous belief and similarity
-    belief_1[i] = update_belief(belief_1[i - 1], similarity, time[i - 1])
-
-    # Belief for State 2 is complementary to belief in State 1
+    # Check similarity with previous stimulus
+    ## This is wrong
+    state_similarity = 1 if stimuli[i] == stimuli[i - 1] else 0
+    
+    # Update belief for State 1 using the heuristic function
+    belief_1[i] = state_beliefs_heuristic(belief_1[i - 1], state_similarity, time[i - 1])
+    
+    # Belief in State 2 is complementary to belief in State 1
     belief_2[i] = 1 - belief_1[i]
+
+    # Debugging output to see belief values at each trial
+    print(f"Trial {i}: belief_1 = {belief_1[i]}, belief_2 = {belief_2[i]}")
 
 # Plot dynamic beliefs for each state across trials
 plt.figure(figsize=(10, 6))
