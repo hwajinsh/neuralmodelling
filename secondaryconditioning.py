@@ -5,16 +5,16 @@ from rescorla_wagner import rescorla_wagner
 ## Secondary Conditioning
 
 # Parameters for the Rescorla-Wagner model
-alpha = 0.1  # Learning rate for stimuli (CS1, CS2)
+alpha = 0.4  # Learning rate for stimuli (CS1, CS2)
 num_trials_pretraining = 50  # Trials in Pre-Training (CS1 only)
 num_trials_training = 50     # Trials in Training (CS1 + CS2)
-num_trials_result = 50       # Trials in Result phase for visualizing expectations
-total_trials = num_trials_pretraining + num_trials_training + num_trials_result
+#num_trials_result = 50       # Trials in Result phase for visualizing expectations
+total_trials = num_trials_pretraining + num_trials_training 
 
-num_trials=1000
+
 # Stimuli presentation arrays for the three stages
-stimuli_1 = np.concatenate([np.ones(num_trials_pretraining), np.ones(num_trials_training), np.zeros(num_trials_result)])
-stimuli_2 = np.concatenate([np.zeros(num_trials_pretraining), np.ones(num_trials_training), np.ones(num_trials_result)])
+stimuli_1 = np.concatenate([np.ones(num_trials_pretraining), np.ones(num_trials_training)])
+stimuli_2 = np.concatenate([np.zeros(num_trials_pretraining), np.ones(num_trials_training)])
 
 # Reward array (1 = reward, 0 = no reward in the Result Phase)
 #rewards = np.concatenate([np.ones(num_trials_pretraining), np.zeros(num_trials_training), np.ones(num_trials_result)])
@@ -24,10 +24,10 @@ stimuli_2 = np.concatenate([np.zeros(num_trials_pretraining), np.ones(num_trials
 
 #Lotta's reasoning
 
-primary_s = np.ones(num_trials)  # Primary stimulus always present
-secondary_s = np.concatenate([np.zeros(num_trials // 2), np.ones(num_trials // 2)])  # Secondary stimulus in second half
-rewards = np.concatenate([np.ones(num_trials // 2), np.zeros(num_trials // 2)])  # Rewards for first half only
-ideal_expectations = np.ones(num_trials)
+primary_s = np.ones(total_trials)  # Primary stimulus always present
+secondary_s = np.concatenate([np.zeros(total_trials // 2), np.ones(total_trials // 2)])  # Secondary stimulus in second half
+rewards = np.concatenate([np.ones(total_trials // 2), np.zeros(total_trials // 2)])  # Rewards for first half only
+ideal_expectations = np.ones(total_trials)
 # Apply Rescorla-Wagner rule
 predictions_v, weights_1, weights_2 = rescorla_wagner(primary_s, secondary_s, rewards, alpha)
 

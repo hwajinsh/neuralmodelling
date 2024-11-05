@@ -17,6 +17,7 @@ belief_array[50:100, 1] = 1.0  # 100% belief in State 2
 # After delay (trial 101), assume some belief in State 1 and 2 reemerges
 belief_array[100, 0] = 0.5  # Partial return to State 1
 belief_array[100, 1] = 0.5  # Partial belief in State 2
+print(belief_array)
 
 # Plot probabilities for each state
 plt.figure(figsize=(10, 6))
@@ -49,6 +50,7 @@ belief_2 = np.zeros(num_trials)
 # Initial belief (100% belief in State 1)
 belief_1[0] = 1.0
 belief_2[0] = 0.0
+
 
 for i in range(1, num_trials):
     # Determine state similarity based on stimuli
