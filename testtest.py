@@ -32,8 +32,8 @@ plt.show()
 
 # Step 2: Define Heuristic Function to Update Belief
 
-# Initialize New Belief Arrays
-num_trials = 101
+# Initialize new belief arrays
+
 belief_1 = np.zeros(num_trials)
 belief_2 = np.zeros(num_trials)
 
@@ -43,10 +43,10 @@ belief_2[0] = 0.0
 
 # Define the time intervals (1 for each of the first 100 trials, 31 for the 101st)
 time = np.ones(num_trials)
-time[100] = 31  # 1-day trial + 30-day delay before for the last trial
+time[100] = 31  # 1-day trial + 30-day delay before for the last test trial
 
-# Define the stimuli (1 for present CS; 0 for )
-stimuli = np.concatenate([np.ones(50), np.zeros(50), np.ones(1)])
+# Define the observations (1 = punishment, 0 = no punishment)
+observation = np.concatenate([np.ones(50), np.zeros(50), np.ones(1)])
 
 # Define the heuristic function with additional debug output
 def state_beliefs_heuristic(belief_1, similarity, time):
@@ -68,7 +68,7 @@ def state_beliefs_heuristic(belief_1, similarity, time):
 # Iterate over trials to update beliefs
 for i in range(1, num_trials):
     # Check similarity with previous stimulus
-    state_similarity = 1 if stimuli[i] == stimuli[i - 1] else 0
+    state_similarity = 1 if observation[i] == observation[i - 1] else 0
     
     # Update belief for State 1 using the heuristic function
     belief_1[i] = state_beliefs_heuristic(belief_1[i - 1], state_similarity, time[i])
@@ -106,6 +106,7 @@ def extinction(belief_1, belief_2, num_trials, learning_rate = 0.1):
     # Define punishment array (US is present during conditioning, absent during extinction)
     punishment = np.zeros(num_trials)
     punishment[:50] = 1  # Punishment during conditioning phase
+    punishment[100] = 1  # Punishment on the test trial
 
     # Loop over each trial
     for i in range(1, num_trials):
@@ -133,5 +134,3 @@ plt.ylabel("Expectation")
 plt.title("Relationship Between Belief States and Punishment Expectations")
 plt.legend()
 plt.show()
-
-# And according to RW-rule, there is no reason for state 2 to be associated with a punishment.
