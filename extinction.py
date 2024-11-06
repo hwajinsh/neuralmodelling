@@ -120,6 +120,6 @@ plt.plot(weights_1, label="Expectation of punishment in belief state 1", color="
 plt.plot(weights_2, label="Expectation of punishment in belief state 2", color="orange", linestyle="--")
 plt.xlabel("Trials")
 plt.ylabel("Expectation")
-plt.title("Relationship Between Belief States and Punishment Expectations")
+plt.title("Rescorla-Wagner Expectations Across Trials for Belief States")
 plt.legend()
 plt.show()
