@@ -5,7 +5,7 @@ from rescorla_wagner import rescorla_wagner
 ## Blocking
 
 # Parameters for the Rescorla-Wagner model
-alpha = 0.15  # Learning rate for stimuli (CS1, CS2)
+epsilon = 0.15  # Learning rate for stimuli (CS1, CS2)
 num_trials_pretraining = 50  # Trials in Pre-Training (CS1 only)
 num_trials_training = 50     # Trials in Training (CS1 + CS2)
 #num_trials_result = 50       # Trials in Result phase for visualizing expectations
@@ -22,7 +22,7 @@ rewards = np.concatenate([np.ones(num_trials_pretraining), np.ones(num_trials_tr
 ideal_expectations = np.concatenate([np.ones(num_trials_pretraining), np.ones(num_trials_training)])
 
 # Apply Rescorla-Wagner rule
-predictions_v, weights_1, weights_2 = rescorla_wagner(stimuli_1, stimuli_2, rewards, alpha)
+predictions_v, weights_1, weights_2 = rescorla_wagner(stimuli_1, stimuli_2, rewards, epsilon)
 
 # Plot 1: Learned predictions, ideal expectations, and stimulus 2
 plt.figure(figsize=(10, 5))
@@ -38,7 +38,7 @@ plt.show()
 
 # Plot 2: Expectations (Weights) for both stimuli
 plt.figure(figsize=(10, 5))
-plt.plot(weights_1, label="Weight for Stimulus 1", color="purple")
+plt.plot(weights_1, label="Weight for Stimulus 1", color="blue")
 plt.plot(weights_2, label="Weight for Stimulus 2", color="orange")
 plt.xlabel("Trials")
 plt.ylabel("Weights")

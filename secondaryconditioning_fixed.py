@@ -44,7 +44,7 @@ plt.show()
 
 # Plot 2: Expectations (Weights) for both stimuli
 plt.figure(figsize=(10, 5))
-plt.plot(weights_1, label="Weight for Stimulus 1", color="purple")
+plt.plot(weights_1, label="Weight for Stimulus 1", color="blue")
 plt.plot(weights_2, label="Weight for Stimulus 2", color="orange")
 plt.xlabel("Trials")
 plt.ylabel("Weights")

@@ -1,14 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from rescorla_wagner import rescorla_wagner
+from rescorla_wagner_overshadowing import rescorla_wagner_overshadowing
 
 ## Overshadowing
 
 # Parameters for the Rescorla-Wagner model
-#learning_rate_CS1 = 0.2
-#learning_rate_CS2 = 0.1
-alpha = 0.1
-num_trials_training = 50     # Trials in Training (CS1 + CS2)
+epsilon = 0.1
+num_trials_training = 100     # Trials in Training (CS1 + CS2)
 #num_trials_result = 50       # Trials in Result (CS1, CS2)
 total_trials = num_trials_training 
 
@@ -23,7 +22,7 @@ rewards = np.concatenate([np.ones(num_trials_training)])
 ideal_expectations = np.concatenate([ np.ones(num_trials_training)])
 
 # Apply Rescorla-Wagner rule
-predictions_v, weights_1, weights_2 = rescorla_wagner(stimuli_1, stimuli_2, rewards, alpha)
+predictions_v, weights_1, weights_2 = rescorla_wagner(stimuli_1, stimuli_2, rewards, epsilon)
 
 # Plot 1: Learned predictions, ideal expectations, and stimulus 2
 plt.figure(figsize=(10, 5))
@@ -41,11 +40,11 @@ plt.show()  # Show first plot separately
 plt.figure(figsize=(10, 5))
 plt.plot(weights_1, label="Weight for Stimulus 1", color="blue")
 plt.plot(weights_2, label="Weight for Stimulus 2", color="orange", linestyle="--")
-plt.plot(rewards, label="Rewards", color="green")
 plt.xlabel("Trials")
 plt.ylabel("Weights")
 plt.title("Expectations (Weights) for Stimulus 1 and Stimulus 2 and Rewards")
 plt.legend()
+plt.ylim(0, 1)
 plt.grid(True)
 plt.show() 
 
@@ -53,3 +52,19 @@ plt.show()
 # Modification of RW rule with two different learning rates needed to plot different weight curves for S1 and S2
 
 ## EXTRA: we can implement another RW code to include 2 learning rates
+epsilon_1 = 0.1
+epsilon_2 = 0.3
+
+predictions_v_new, weights_1_new, weights_2_new = rescorla_wagner_overshadowing(stimuli_1, stimuli_2, rewards, epsilon_1, epsilon_2)
+
+# Plot 3: Expectations (Weights) for both stimuli with different weight
+plt.figure(figsize=(10, 5))
+plt.plot(weights_1_new, label="Weight for Stimulus 1", color="blue")
+plt.plot(weights_2_new, label="Weight for Stimulus 2", color="orange", linestyle="--")
+plt.xlabel("Trials")
+plt.ylabel("Weights")
+plt.title("Expectations (Weights) for Stimulus 1 and Stimulus 2 and Rewards")
+plt.ylim(0, 1)
+plt.legend()
+plt.grid(True)
+plt.show() 
