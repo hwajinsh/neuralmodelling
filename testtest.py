@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-## Extinction Sample Work
+## Extinction
 
 # Step 1: Define Belief Array
 

@@ -1,8 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-## Extinction
-
 # Step 1: Define Belief Array
 # 50 trials for conditioning, 50 for extinction, and 1 post-delay
 num_trials = 101
@@ -17,6 +15,16 @@ belief_array[50:100, 1] = 1.0  # 100% belief in State 2
 # After delay (trial 101), assume some belief in State 1 and 2 reemerges
 belief_array[100, 0] = 0.5  # Partial return to State 1
 belief_array[100, 1] = 0.5  # Partial belief in State 2
+
+# Plot probabilities for each state
+plt.figure(figsize=(10, 6))
+plt.plot(belief_array[:, 0], label="Belief State 1", color="blue")
+plt.plot(belief_array[:, 1], label="Belief State 2", color="orange")
+plt.xlabel("Trial")
+plt.ylabel("Probability of being in state")
+plt.title("Probabilities of Being in State 1 and State 2 Across Trials")
+plt.legend()
+plt.show()
 
 # Step 2: Plot Expectation of Receiving US
 # High expectation during conditioning, lower during extinction, moderate after delay
