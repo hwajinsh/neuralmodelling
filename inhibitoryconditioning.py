@@ -8,7 +8,7 @@ from rescorla_wagner import rescorla_wagner
 # does not fluctuate in the beginning and it stabilizes
 
 # Parameters for the Rescorla-Wagner model
-alpha = 0.15  # Learning rate for stimuli (CS1, CS2)
+epsilon = 0.1  # Learning rate for stimuli (CS1, CS2)
 num_trials_training = 200     # Trials in Training (CS1 + CS2)
 #num_trials_result = 200     # Trials in Result phase for visualizing expectations
 total_trials = num_trials_training 
@@ -28,7 +28,7 @@ rewards = stimuli_1 - stimuli_2
 ideal_expectations = stimuli_1 - stimuli_2
 
 # Apply Rescorla-Wagner rule
-predictions_v, weights_1, weights_2 = rescorla_wagner(stimuli_1, stimuli_2, rewards, alpha)
+predictions_v, weights_1, weights_2 = rescorla_wagner(stimuli_1, stimuli_2, rewards, epsilon)
 
 # Plot expectations (Weights) for both stimuli
 plt.figure(figsize=(10, 5))

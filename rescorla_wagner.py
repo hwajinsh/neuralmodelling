@@ -1,7 +1,7 @@
 import numpy as np      # To add all untracked files in the current directory and subdirectories
 
 
-def rescorla_wagner(stimuli_1, stimuli_2, rewards, alpha):
+def rescorla_wagner(stimuli_1, stimuli_2, rewards, epsilon):
     """
     Implement the Rescorla-Wagner rule for associative learning.
     
@@ -35,7 +35,7 @@ def rescorla_wagner(stimuli_1, stimuli_2, rewards, alpha):
         error = rewards[i] - predictions_v[i]
         
         # Update associative weights for each stimulus based on the error
-        weights_1[i] = weights_1[i-1] + alpha * error * stimuli_1[i]
-        weights_2[i] = weights_2[i-1] + alpha * error * stimuli_2[i]
+        weights_1[i] = weights_1[i-1] + epsilon * error * stimuli_1[i]
+        weights_2[i] = weights_2[i-1] + epsilon * error * stimuli_2[i]
     
     return predictions_v, weights_1, weights_2

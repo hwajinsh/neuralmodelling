@@ -6,8 +6,8 @@ from rescorla_wagner import rescorla_wagner
 
 # Parameters for the Rescorla-Wagner model
 alpha = 0.1
-num_trials_pretraining = 50 
-num_trials_training = 50   
+num_trials_pretraining = 100 
+num_trials_training = 100   
 #num_trials_result = 50   
 total_trials = num_trials_pretraining + num_trials_training 
 
@@ -24,6 +24,19 @@ ideal_expectations = np.concatenate([np.ones(num_trials_pretraining), np.ones(nu
 predictions_v, weights_1, weights_2 = rescorla_wagner(stimuli_1, stimuli_2, rewards, alpha)
 
 # Plotting the results
+
+# Plot: Learned predictions, ideal expectations, and stimulus 2
+plt.figure(figsize=(10, 5))
+plt.plot(predictions_v, label="Learned Predictions", color="blue")
+plt.plot(ideal_expectations, label="Ideal Expectations", color="orange")
+plt.xlabel("Trials")
+plt.ylabel("Values")
+plt.title("Learned Predictions and Ideal Expectations")
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Plot 2: Expectations (Weights) for both stimuli
 plt.figure(figsize=(10, 5))
 plt.plot(weights_1, label="Weight for Stimulus 1", color="blue")
 plt.plot(weights_2, label="Weight for Stimulus 2", color="orange", linestyle="--")
