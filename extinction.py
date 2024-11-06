@@ -49,7 +49,7 @@ observation = np.concatenate([np.ones(50), np.zeros(50), np.ones(1)])
 
 # Define the heuristic function with additional debug output
 def state_beliefs_heuristic(belief_1, similarity, time):
-    time_weight = 1 / (1 + 1/30 * time)  # Hyperbolic discounting of time weight in line with part 1
+    time_weight = 1 / (1 + 1/31 * time)  # Hyperbolic discounting of time weight in line with part 1
     prob_same_state = time_weight * similarity
     prob_diff_state = time_weight * (1 - similarity)
     
