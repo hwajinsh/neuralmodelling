@@ -27,6 +27,7 @@ plt.xlabel("Trial")
 plt.ylabel("Probability of being in state")
 plt.title("Probabilities of Being in State 1 and State 2 Across Trials")
 plt.legend()
+plt.grid(True)
 plt.show()
 
 # Step 2: Define Heuristic Function to Update Belief
@@ -48,7 +49,7 @@ observation = np.concatenate([np.ones(50), np.zeros(50), np.ones(1)])
 
 # Define the heuristic function with additional debug output
 def state_beliefs_heuristic(belief_1, similarity, time):
-    time_weight = 1 / (1 + 1/30 * time)  # Hyperbolic discounting of time weight in line with 
+    time_weight = 1 / (1 + 1/30 * time)  # Hyperbolic discounting of time weight in line with part 1
     prob_same_state = time_weight * similarity
     prob_diff_state = time_weight * (1 - similarity)
     
@@ -82,7 +83,7 @@ plt.ylabel("Probability of being in state")
 plt.title("Heuristic Probabilities of Being in State 1 and State 2 Across Trials")
 plt.legend()
 plt.xlim(0, num_trials - 1)
-plt.xticks(np.arange(0, num_trials, step=10))  # Optional: Set x-ticks for clarity
+plt.grid(True)
 plt.show()
 
 # Step 3: Rescorla-Wagner Update for Association Strength
@@ -120,6 +121,7 @@ plt.plot(weights_1, label="Expectation of punishment in belief state 1", color="
 plt.plot(weights_2, label="Expectation of punishment in belief state 2", color="orange", linestyle="--")
 plt.xlabel("Trials")
 plt.ylabel("Expectation")
-plt.title("Relationship Between Belief States and Punishment Expectations")
+plt.title("Rescorla-Wagner Expectations Across Trials for Belief States")
 plt.legend()
+plt.grid(True)
 plt.show()
