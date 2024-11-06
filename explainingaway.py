@@ -6,8 +6,8 @@ from rescorla_wagner import rescorla_wagner
 
 # Parameters for the Rescorla-Wagner model
 alpha = 0.1
-num_trials_pretraining = 50 
-num_trials_training = 50   
+num_trials_pretraining = 100 
+num_trials_training = 100   
 #num_trials_result = 50   
 total_trials = num_trials_pretraining + num_trials_training 
 

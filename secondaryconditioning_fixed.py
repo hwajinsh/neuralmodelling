@@ -6,8 +6,8 @@ from rescorla_wagner import rescorla_wagner
 
 # Parameters for the Rescorla-Wagner model
 alpha = 0.4  # Learning rate for stimuli (CS1, CS2)
-num_trials_pretraining = 50  # Trials in Pre-Training (CS1 only)
-num_trials_training = 50     # Trials in Training (CS1 + CS2)
+num_trials_pretraining = 100  # Trials in Pre-Training (CS1 only)
+num_trials_training = 100     # Trials in Training (CS1 + CS2)
 #num_trials_result = 50       # Trials in Result phase for visualizing expectations
 total_trials = num_trials_pretraining + num_trials_training 
 

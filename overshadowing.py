@@ -7,7 +7,7 @@ from rescorla_wagner_overshadowing import rescorla_wagner_overshadowing
 
 # Parameters for the Rescorla-Wagner model
 epsilon = 0.1
-num_trials_training = 100     # Trials in Training (CS1 + CS2)
+num_trials_training = 200     # Trials in Training (CS1 + CS2)
 #num_trials_result = 50       # Trials in Result (CS1, CS2)
 total_trials = num_trials_training 
 
