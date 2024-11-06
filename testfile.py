@@ -29,7 +29,6 @@ plt.legend()
 plt.show()
 
 # Step 2: Define Heuristic Function to Update Belief
-
 # Initialize Belief Arrays
 num_trials = 101
 belief_1 = np.zeros(num_trials)

@@ -1,12 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-## Extinction Sample Work
+## Extinction
 
 # Step 1: Define Belief Array
 
 # 50 trials for conditioning, 50 for extinction, and 1 post-delay
-
 num_trials = 101
 belief_array = np.zeros((num_trials, 2))  # 2 possible states
 
@@ -50,24 +49,20 @@ observation = np.concatenate([np.ones(50), np.zeros(50), np.ones(1)])
 
 # Define the heuristic function with additional debug output
 def state_beliefs_heuristic(belief_1, similarity, time):
-    time_weight = (1 / time) 
+    time_weight = (1 / time)
     prob_same_state = time_weight * similarity
     prob_diff_state = time_weight * (1 - similarity)
     
     prob_state_1 = belief_1 * prob_same_state + (1 - belief_1) * prob_diff_state
-    prob_state_2 = belief_1 * prob_diff_state + (1 - belief_1) * prob_same_state
-    
-    # Normalize to calculate the probability of being in State 1
-    state_1 = prob_state_1 / (prob_state_1 + prob_state_2)
     
     # Debugging output to check calculations
-    print(f"time: {time}, time_weight: {time_weight}, prob_same_state: {prob_same_state}, prob_diff_state: {prob_diff_state}, state_1: {state_1}")
+    print(f"time: {time}, time_weight: {time_weight}, prob_same_state: {prob_same_state}, prob_diff_state: {prob_diff_state}, state_1: {prob_state_1}")
     
-    return state_1
+    return prob_state_1
 
 # Iterate over trials to update beliefs
 for i in range(1, num_trials):
-    # Check similarity with previous stimulus
+    # Check similarity with previous observation
     state_similarity = 1 if observation[i] == observation[i - 1] else 0
     
     # Update belief for State 1 using the heuristic function
