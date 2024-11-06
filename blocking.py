@@ -8,7 +8,6 @@ from rescorla_wagner import rescorla_wagner
 epsilon = 0.15  # Learning rate for stimuli (CS1, CS2)
 num_trials_pretraining = 100  # Trials in Pre-Training (CS1 only)
 num_trials_training = 100     # Trials in Training (CS1 + CS2)
-#num_trials_result = 50       # Trials in Result phase for visualizing expectations
 total_trials = num_trials_pretraining + num_trials_training
 
 # Stimuli presentation arrays for the three stages
@@ -24,7 +23,7 @@ ideal_expectations = np.concatenate([np.ones(num_trials_pretraining), np.ones(nu
 # Apply Rescorla-Wagner rule
 predictions_v, weights_1, weights_2 = rescorla_wagner(stimuli_1, stimuli_2, rewards, epsilon)
 
-# Plot 1: Learned predictions, ideal expectations, and stimulus 2
+# Plot 1: Learned predictions and ideal expectations
 plt.figure(figsize=(10, 5))
 plt.plot(predictions_v, label="Learned Predictions", color="blue")
 plt.plot(ideal_expectations, label="Ideal Expectations", color="orange")

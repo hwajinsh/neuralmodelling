@@ -5,33 +5,24 @@ from rescorla_wagner import rescorla_wagner
 ## Secondary Conditioning
 
 # Parameters for the Rescorla-Wagner model
-alpha = 0.4  # Learning rate for stimuli (CS1, CS2)
+epsilon = 0.4  # Learning rate for stimuli (CS1, CS2)
 num_trials_pretraining = 100  # Trials in Pre-Training (CS1 only)
 num_trials_training = 100     # Trials in Training (CS1 + CS2)
-#num_trials_result = 50       # Trials in Result phase for visualizing expectations
 total_trials = num_trials_pretraining + num_trials_training 
 
+# Stimuli presentation and reward arrays for the two training stages 
+stimuli_1 = np.concatenate([np.ones(num_trials_pretraining), np.ones(num_trials_training)])     # CS1 always present
+stimuli_2 = np.concatenate([np.zeros(num_trials_pretraining), np.ones(num_trials_training)])    # CS2 in second half
+rewards = np.concatenate([np.ones(num_trials_pretraining), np.zeros(num_trials_training)])      # Reward in first half
 
-# Stimuli presentation arrays for the three stages
-stimuli_1 = np.concatenate([np.ones(num_trials_pretraining), np.ones(num_trials_training)])
-stimuli_2 = np.concatenate([np.zeros(num_trials_pretraining), np.ones(num_trials_training)])
-
-# Reward array (1 = reward, 0 = no reward in the Result Phase)
-#rewards = np.concatenate([np.ones(num_trials_pretraining), np.zeros(num_trials_training), np.ones(num_trials_result)])
-
-# Ideal expectations in blocking: reward is always present
-#ideal_expectations = np.concatenate([np.ones(num_trials_pretraining), np.ones(num_trials_training), np.ones(num_trials_result)])
-
-#Lotta's reasoning
-
-primary_s = np.ones(total_trials)  # Primary stimulus always present
-secondary_s = np.concatenate([np.zeros(total_trials // 2), np.ones(total_trials // 2)])  # Secondary stimulus in second half
-rewards = np.concatenate([np.ones(total_trials // 2), np.zeros(total_trials // 2)])  # Rewards for first half only
+# Ideal Expectation of Rewards
+### Is this supposed to be ones? 
 ideal_expectations = np.ones(total_trials)
-# Apply Rescorla-Wagner rule
-predictions_v, weights_1, weights_2 = rescorla_wagner(primary_s, secondary_s, rewards, alpha)
 
-# Plot: Learned predictions, ideal expectations, and stimulus 2
+# Apply Rescorla-Wagner rule
+predictions_v, weights_1, weights_2 = rescorla_wagner(stimuli_1, stimuli_2, rewards, epsilon)
+
+# Plot: Learned predictions and ideal expectations
 plt.figure(figsize=(10, 5))
 plt.plot(predictions_v, label="Learned Predictions", color="blue")
 plt.plot(ideal_expectations, label="Ideal Expectations", color="orange")
@@ -52,6 +43,3 @@ plt.title("Expectations (Weights) for Stimulus 1 and Stimulus 2")
 plt.legend()
 plt.grid(True)
 plt.show()
-# Why does the Rescorla-Wagner rule failed to produce the correct expectations?
-# Since the reward does not appear when the second stimulus is presented, the delta rule would cause w2 to become negative. 
-# In other words, in this case, the Rescorla-Wagner rule incorrectly predicts inhibitory, not excitatory, secondary conditioning.
