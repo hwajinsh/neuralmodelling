@@ -1,7 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+## Extinction
+
 # Step 1: Define Belief Array
+
 # 50 trials for conditioning, 50 for extinction, and 1 post-delay
 num_trials = 101
 belief_array = np.zeros((num_trials, 2))  # 2 possible states
@@ -26,65 +29,97 @@ plt.title("Probabilities of Being in State 1 and State 2 Across Trials")
 plt.legend()
 plt.show()
 
-# Step 2: Plot Expectation of Receiving US
-# High expectation during conditioning, lower during extinction, moderate after delay
-expectation = np.zeros(num_trials)
+# Step 2: Define Heuristic Function to Update Belief
 
-# Set expectations for each phase
-expectation[:50] = 1.0  # High expectation in State 1
-expectation[50:100] = 0.0  # Low expectation in State 2
-expectation[100] = 0.5  # What do we expect? spontaneous full recovery? moderate? 
+# Initialize new belief arrays
+belief_1 = np.zeros(num_trials)
+belief_2 = np.zeros(num_trials)
 
+# Set initial conditions
+belief_1[0] = 1.0  # Start with 100% belief in State 1
+belief_2[0] = 0.0
+
+# Define the time intervals (1 for each of the first 100 trials, 31 for the 101st)
+time = np.zeros(num_trials)
+time[100] = 31  # 1-day trial + 30-day delay before for the last test trial
+
+# Define the observations (1 = punishment, 0 = no punishment)
+observation = np.concatenate([np.ones(50), np.zeros(50), np.ones(1)])
+
+# Define the heuristic function with additional debug output
+def state_beliefs_heuristic(belief_1, similarity, time):
+    time_weight = 1 / (1 + 1/30 * time)  # Hyperbolic discounting of time weight in line with 
+    prob_same_state = time_weight * similarity
+    prob_diff_state = time_weight * (1 - similarity)
+    
+    prob_state_1 = belief_1 * prob_same_state + (1 - belief_1) * prob_diff_state
+    
+    # Debugging output to check calculations
+    print(f"time: {time}, time_weight: {time_weight}, prob_same_state: {prob_same_state}, prob_diff_state: {prob_diff_state}, state_1: {prob_state_1}")
+    
+    return prob_state_1
+
+# Iterate over trials to update beliefs
+for i in range(1, num_trials):
+    # Check similarity with previous observation
+    state_similarity = 1 if observation[i] == observation[i - 1] else 0
+    
+    # Update belief for State 1 using the heuristic function
+    belief_1[i] = state_beliefs_heuristic(belief_1[i - 1], state_similarity, time[i])
+    
+    # Belief in State 2 is complementary to belief in State 1
+    belief_2[i] = 1 - belief_1[i]
+
+    # Debugging output to see belief values at each trial
+    print(f"Trial {i}: belief_1 = {belief_1[i]}, belief_2 = {belief_2[i]}")
+
+# Plot heuristic beliefs for each state across trials
 plt.figure(figsize=(10, 6))
-plt.plot(expectation, label="Expectation of US")
+plt.plot(belief_1, label="Belief State 1", color="blue")
+plt.plot(belief_2, label="Belief State 2", color="orange")
 plt.xlabel("Trial")
-plt.ylabel("Expectation of US")
-plt.title("Animal's Expectation of Receiving the US on Each Trial")
+plt.ylabel("Probability of being in state")
+plt.title("Heuristic Probabilities of Being in State 1 and State 2 Across Trials")
 plt.legend()
+plt.xlim(0, num_trials - 1)
+plt.xticks(np.arange(0, num_trials, step=10))  # Optional: Set x-ticks for clarity
 plt.show()
 
-# Step 3: Define Heuristic Function to Update Belief
-def update_belief(belief_1, similarity, time):
+# Step 3: Rescorla-Wagner Update for Association Strength
+
+def extinction(belief_1, belief_2, num_trials, learning_rate = 0.1):
+    weights_1 = np.zeros(num_trials)
+    weights_2 = np.zeros(num_trials)
+    predictions = np.zeros(num_trials)
     
-    time_weight = (1 / time) * 10
+    # Define punishment array (US is present during conditioning, absent during extinction)
+    punishment = np.zeros(num_trials)
+    punishment[:50] = 1  # Punishment during conditioning phase
+    punishment[100] = 1  # Punishment on the test trial
 
-    prob_same = time_weight * similarity
-    prob_diff = time_weight * (1 - similarity)
+    # Loop over each trial
+    for i in range(1, num_trials):
+        # Calculate predicted punishment based on belief states and previous weights
+        predictions[i] = weights_1[i-1] * belief_1[i-1] + weights_2[i-1] * belief_2[i-1]
+        
+        # Calculate prediction error
+        error = punishment[i] - predictions[i]
+        
+        # Update weights based on prediction error and belief states
+        weights_1[i] = weights_1[i-1] + learning_rate * error * belief_1[i-1]
+        weights_2[i] = weights_2[i-1] + learning_rate * error * belief_2[i-1]
 
-    prob_1 = belief_1 * prob_same + (1 - belief_1) * prob_diff
-    prob_2 = belief_1 * prob_diff + (1 - belief_1) * prob_same
+    return weights_1, weights_2
 
-    state_1 = prob_1 / (prob_1 + prob_2)
+# Run the Rescorla-Wagner extinction process
+weights_1, weights_2 = extinction(belief_1, belief_2, num_trials)
 
-    return state_1
-
-# Step 4: Rescorla-Wagner Update for Association Strength
-def update_association_strength(belief, prev_strength, learning_rate, reward):
-    # Using Rescorla-Wagner rule: ΔV = α * (λ - V)
-    prediction_error = reward - prev_strength
-    return prev_strength + learning_rate * belief * prediction_error
-
-# Initialize association strengths for each state
-association_strengths = np.zeros((num_trials, 2))
-learning_rate = 0.1
-
-# Trial loop for updating association strengths
-for trial in range(num_trials):
-    reward = 1 if trial < 50 else 0  # Reward during conditioning phase only
-
-    # For each state, update association strength weighted by belief
-    for state in range(2):
-        association_strengths[trial, state] = update_association_strength(
-            belief_array[trial, state], association_strengths[trial - 1, state] if trial > 0 else 0,
-            learning_rate, reward
-        )
-
-# Plot association strengths for each state
+# Plot the weights for each state over trials
 plt.figure(figsize=(10, 6))
-for state in range(2):
-    plt.plot(association_strengths[:, state], label=f"State {state+1}")
-plt.xlabel("Trial")
-plt.ylabel("Association Strength (CS-US)")
-plt.title("Association Strength between CS and US for Each State")
+plt.plot(weights_1, label="Expectation of punishment in belief state 1", color="blue")
+plt.plot(weights_2, label="Expectation of punishment in belief state 2", color="orange", linestyle="--")
+plt.xlabel("Trials")
+plt.ylabel("Expectation")
+plt.title("Relationship Between Belief States and Punishment Expectations")
 plt.legend()
 plt.show()
