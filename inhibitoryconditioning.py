@@ -37,9 +37,9 @@ ideal_test_2 = testing_2
 
 # Plot 1: Idealised Expectations for Inhibitory Conditioning Across Trials
 plt.figure(figsize=(10, 5))
-plt.plot(predictions_v, label="Summed Idealised Expectations", color="green", linestyle = "--")
 plt.plot(ideal_weight_1, label="Ideal Expectations (Stimulus 1)", color="blue")
 plt.plot(ideal_weight_2, label="Ideal Expectations (Stimulus 2)", color="orange")
+plt.plot(predictions_v, label="Summed Idealised Expectations", color="green", linestyle = "--")
 plt.plot((total_trials - 2), ideal_test_1, 'o', color="blue")
 plt.plot((total_trials - 1), ideal_test_2, 'o', color="orange")
 plt.xlabel("Trials")
@@ -51,9 +51,9 @@ plt.show()
 
 # Plot 2: Learned Expectations for Inhibitory Conditioning Across Trials
 plt.figure(figsize=(10, 5))
-plt.plot(predictions_v, label="Summed Learned Expectations", color="green", linestyle = "--")
 plt.plot(weights_1, label="Weight (Stimulus 1)", color="blue")
 plt.plot(weights_2, label="Weight (Stimulus 2)", color="orange")
+plt.plot(predictions_v, label="Summed Learned Expectations", color="green", linestyle = "--")
 plt.plot((total_trials - 2), testing_1, 'o', color="blue")
 plt.plot((total_trials - 1), testing_2, 'o', color="orange")
 plt.xlabel("Trials")

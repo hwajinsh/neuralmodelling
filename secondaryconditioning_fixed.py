@@ -63,9 +63,9 @@ plt.show()
 
 # Plot 2: Learned Expectations for Inhibitory Conditioning Across Trials
 plt.figure(figsize=(10, 5))
-plt.plot(predictions_v, label="Summed Learned Expectations", color="green", linestyle = "--")
 plt.plot(weights_1, label="Weight (Stimulus 1)", color="blue")
 plt.plot(weights_2, label="Weight (Stimulus 2)", color="orange")
+plt.plot(predictions_v, label="Summed Learned Expectations", color="green", linestyle = "--")
 plt.plot((total_trials - 1), testing_1, 'o', color="orange")
 plt.xlabel("Trials")
 plt.ylabel("Expectations")

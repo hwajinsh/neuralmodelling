@@ -49,9 +49,9 @@ plt.show()
 
 # Plot 2: Learned Expectations for Overshadowing Across Trials
 plt.figure(figsize=(10, 5))
-plt.plot(predictions_v, label="Summed Learned Expectations", color="green", linestyle = "--")
 plt.plot(weights_1, label="Weight (Stimulus 1)", color="blue")
 plt.plot(weights_2, label="Weight (Stimulus 2)", color="orange")
+plt.plot(predictions_v, label="Summed Learned Expectations", color="green", linestyle = "--")
 plt.plot((total_trials - 2), testing_1, 'o', color="blue")
 plt.plot((total_trials - 1), testing_2, 'o', color="orange")
 plt.xlabel("Trials")
@@ -76,9 +76,9 @@ testing_2_new = weights_1_new[total_trials - 3] * stimuli_1[total_trials - 1] + 
 
 # Plot 3: Expectations (Weights) for both stimuli with different weight
 plt.figure(figsize=(10, 5))
-plt.plot(predictions_v, label="Summed Learned Expectations", color="green", linestyle = "--")
 plt.plot(weights_1_new, label="Weight (Stimulus 1)", color="blue")
 plt.plot(weights_2_new, label="Weight (Stimulus 2)", color="orange")
+plt.plot(predictions_v, label="Summed Learned Expectations", color="green", linestyle = "--")
 plt.plot((total_trials - 2), testing_1_new, 'o', color="blue")
 plt.plot((total_trials - 1), testing_2_new, 'o', color="orange")
 plt.xlabel("Trials")
