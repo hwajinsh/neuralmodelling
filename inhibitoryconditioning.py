@@ -18,9 +18,8 @@ stimuli_2 = np.concatenate([
     np.tile([1, 0], num_trials_training // 2), np.zeros(CS1_testing), np.ones(CS2_testing) # CS2 is present only when CS1 is not rewarded
 ])
 
-
 # Reward array (difference between stimuli_1 and stimuli_2 or inhibitory stimuli)
-rewards = stimuli_1 - stimuli_2
+rewards = np.tile([0, 1], num_trials_training // 2)
 
 # Apply Rescorla-Wagner rule
 predictions_v, weights_1, weights_2 = rescorla_wagner(stimuli_1, stimuli_2, rewards, epsilon)
@@ -35,7 +34,6 @@ ideal_weight_1 = weights_1
 ideal_weight_2 = weights_2
 ideal_test_1 = testing_1
 ideal_test_2 = testing_2
-
 
 # Plot 1: Idealised Expectations for Inhibitory Conditioning Across Trials
 plt.figure(figsize=(10, 5))
