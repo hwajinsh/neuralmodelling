@@ -1,5 +1,4 @@
-import numpy as np      # To add all untracked files in the current directory and subdirectories
-
+import numpy as np      
 
 def rescorla_wagner(stimuli_1, stimuli_2, rewards, epsilon):
     """
@@ -30,12 +29,11 @@ def rescorla_wagner(stimuli_1, stimuli_2, rewards, epsilon):
     for i in range(1, num_trials):
         # Calculate the predicted reward for the current trial
         predictions_v[i] = weights_1[i-1] * stimuli_1[i] + weights_2[i-1] * stimuli_2[i]
-        
+
         # Compute the prediction error as the difference between actual and predicted rewards
         error = rewards[i] - predictions_v[i]
         
         # Update associative weights for each stimulus based on the error
         weights_1[i] = weights_1[i-1] + epsilon * error * stimuli_1[i]
         weights_2[i] = weights_2[i-1] + epsilon * error * stimuli_2[i]
-    
     return predictions_v, weights_1, weights_2
