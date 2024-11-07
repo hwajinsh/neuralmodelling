@@ -96,7 +96,6 @@ def extinction(belief_1, belief_2, num_trials, learning_rate = 0.1):
     # Define punishment array
     punishment = np.zeros(num_trials)
     punishment[:50] = 1  # Punishment during conditioning phase
-    punishment[100] = 1  # Punishment on the test trial
 
     # Loop over each trial
     for i in range(1, num_trials):
