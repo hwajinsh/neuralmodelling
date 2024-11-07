@@ -7,7 +7,7 @@ from rescorla_wagner import rescorla_wagner
 ## We need more trials in training and testing (specially in training) so that it
 # does not fluctuate in the beginning and it stabilizes
 
-epsilon = 0.4
+epsilon = 0.3
 num_trials_training = 100    
 CS1_testing = 1
 CS2_testing = 1      
