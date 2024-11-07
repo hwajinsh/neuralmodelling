@@ -27,17 +27,38 @@ predictions_v, weights_1, weights_2 = rescorla_wagner(stimuli_1, stimuli_2, rewa
 testing_1 = weights_1[total_trials - 3] * stimuli_1[total_trials - 2] + weights_2[total_trials - 3] * stimuli_2[total_trials - 2]
 testing_2 = weights_1[total_trials - 3] * stimuli_1[total_trials - 1] + weights_2[total_trials - 3] * stimuli_2[total_trials - 1]
 
-#CHANGEEEEEEEEEEEE
-# Ideal expectations in blocking: RW model correctly reflects the idealised expectations
-ideal_expectations = predictions_v
-ideal_weight_1 = weights_1
-ideal_weight_2 = weights_2
-ideal_test_1 = testing_1
-ideal_test_2 = testing_2
+
+# Ideal expectations in explaining away: RW model does not reflect the idealised expectations
+# Generate exponential growth for Stimulus 1 during both phases
+x_pretraining = np.linspace(0, 1, num_trials_pretraining)
+x_training = np.linspace(0, 1, num_trials_training)
+
+# Idealized exponential functions for Stimulus 1 (Weights 1)
+weights_1_pretraining = 0.5 * (1 - np.exp(-7 * x_pretraining))  # From 0 to 0.5
+weights_1_training = 0.5 + 0.5 * (1 - np.exp(-7 * x_training))  # From 0.5 to 1
+
+# Combine both phases for Stimulus 1
+ideal_weight_1 = np.concatenate((weights_1_pretraining, weights_1_training))
+
+# Smoother transition for Stimulus 2 (Weights 2)
+weights_2_pretraining = 0.5 * (1 - np.exp(-7 * x_pretraining))  # From 0 to 0.5 during pretraining
+weights_2_training = 0.5 * np.exp(-7 * (x_training))  # Decays smoothly from 0.5 to 0
+
+# Combine both phases for Stimulus 2
+ideal_weight_2 = np.concatenate((weights_2_pretraining, weights_2_training))
+
+# Summed ideal expectations
+summed_ideal_expectations = ideal_weight_1 + ideal_weight_2
+
+ideal_test_1 = (ideal_weight_1[total_trials - 3] * stimuli_1[total_trials - 2] + 
+             ideal_weight_2[total_trials - 3] * stimuli_2[total_trials - 2])
+ideal_test_2 = (ideal_weight_1[total_trials - 3] * stimuli_1[total_trials - 1] + 
+             ideal_weight_2[total_trials - 3] * stimuli_2[total_trials - 1])
+
 
 # Plot 1: Idealised Expectations for Explaining Away Across Trials
 plt.figure(figsize=(10, 5))
-plt.plot(predictions_v, label="Summed Idealised Expectations", color="green", linestyle = "--")
+plt.plot(summed_ideal_expectations, label="Summed Idealised Expectations", color="green", linestyle = "--")
 plt.plot(ideal_weight_1, label="Ideal Expectations (Stimulus 1)", color="blue")
 plt.plot(ideal_weight_2, label="Ideal Expectations (Stimulus 2)", color="orange")
 plt.plot((total_trials - 2), ideal_test_1, 'o', color="blue")
