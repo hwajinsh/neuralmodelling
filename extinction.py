@@ -24,13 +24,26 @@ plt.figure(figsize=(10, 6))
 plt.plot(belief_array[:, 0], label="Belief State 1", color="blue")
 plt.plot(belief_array[:, 1], label="Belief State 2", color="orange")
 plt.xlabel("Trial")
-plt.ylabel("Probability of being in state")
+plt.ylabel("Probability")
 plt.title("Probabilities of Being in State 1 and State 2 Across Trials")
 plt.legend()
 plt.grid(True)
 plt.show()
 
-# Step 2: Define Heuristic Function to Update Belief
+# Step 2: Draw an Expectation of Receiving the US After the CS Across Trial
+
+# Plot the expectation of punishment across extinction trials
+# Animal assumes punishment in State 1; Expectation of Punishment = Belief State 1
+plt.figure(figsize=(10, 6))
+plt.plot(belief_array[:, 0], label="Expectation of Punishment", color="green")
+plt.xlabel("Trial")
+plt.ylabel("Expectation")
+plt.title("Expectation of Punishment Across Trials")
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Step 3: Define Heuristic Function to Update Belief
 
 # Initialize new belief arrays
 belief_1 = np.zeros(num_trials)
@@ -50,6 +63,7 @@ observation = np.concatenate([np.ones(50), np.zeros(50), np.ones(1)])
 # Define the heuristic function with additional debug output
 def state_beliefs_heuristic(belief_1, similarity, time):
     time_weight = 1 / (1 + 1/31 * time)  # Hyperbolic discounting of time weight with degree of discounting (1/31) in line with part 1
+    
     prob_same_state = time_weight * similarity
     prob_diff_state = time_weight * (1 - similarity)
     
@@ -79,17 +93,16 @@ plt.figure(figsize=(10, 6))
 plt.plot(belief_1, label="Belief State 1", color="blue")
 plt.plot(belief_2, label="Belief State 2", color="orange")
 plt.xlabel("Trial")
-plt.ylabel("Probability of being in state")
+plt.ylabel("Probability")
 plt.title("Heuristic Probabilities of Being in State 1 and State 2 Across Trials")
 plt.legend()
-plt.xlim(0, num_trials - 1)
 plt.grid(True)
 plt.show()
 
-# Step 3: Rescorla-Wagner Update for Association Strength
+# Step 4: Rescorla-Wagner Update for Association Strength
 
 def extinction(belief_1, belief_2, num_trials, learning_rate = 0.1):
-    weights_1 = np.zeros(num_trials)
+    weights_1 = np.zeros(num_trials) 
     weights_2 = np.zeros(num_trials)
     predictions = np.zeros(num_trials)
     
@@ -109,6 +122,7 @@ def extinction(belief_1, belief_2, num_trials, learning_rate = 0.1):
         weights_1[i] = weights_1[i-1] + learning_rate * error * belief_1[i-1]
         weights_2[i] = weights_2[i-1] + learning_rate * error * belief_2[i-1]
 
+    # Return predictions and weights
     return weights_1, weights_2
 
 # Run the Rescorla-Wagner extinction process
@@ -116,11 +130,11 @@ weights_1, weights_2 = extinction(belief_1, belief_2, num_trials)
 
 # Plot the weights for each state over trials
 plt.figure(figsize=(10, 6))
-plt.plot(weights_1, label="Expectation of punishment in belief state 1", color="blue")
-plt.plot(weights_2, label="Expectation of punishment in belief state 2", color="orange", linestyle="--")
+plt.plot(weights_1, label="Expectation of Punishment in Belief State 1", color="blue")
+plt.plot(weights_2, label="Expectation of Punishment in Belief State 2", color="orange")
 plt.xlabel("Trials")
 plt.ylabel("Expectation")
-plt.title("Rescorla-Wagner Expectations Across Trials for Belief States")
+plt.title("Rescorla-Wagner Expectations of Punishment for Belief States 1 and 2 Across Trials")
 plt.legend()
 plt.grid(True)
 plt.show()
