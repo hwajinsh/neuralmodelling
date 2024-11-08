@@ -5,6 +5,7 @@ from rescorla_wagner_overshadowing import rescorla_wagner_overshadowing
 
 ## Overshadowing
 
+# Learned Expectations in Overshawdowing
 # Parameters for the Rescorla-Wagner model
 epsilon = 0.15
 num_trials_training = 100     # Trials in Training (CS1 + CS2)
@@ -26,7 +27,7 @@ predictions_v, weights_1, weights_2 = rescorla_wagner(stimuli_1, stimuli_2, rewa
 testing_1 = weights_1[total_trials - 3] * stimuli_1[total_trials - 2] + weights_2[total_trials - 3] * stimuli_2[total_trials - 2]
 testing_2 = weights_1[total_trials - 3] * stimuli_1[total_trials - 1] + weights_2[total_trials - 3] * stimuli_2[total_trials - 1]
 
-# Ideal expectations in overshadowing: RW model correctly reflects the idealised expectations
+# Idealised Expectations in Overshadowing: RW model correctly reflects the idealised expectations
 ideal_expectations = predictions_v
 ideal_weight_1 = weights_1
 ideal_weight_2 = weights_2

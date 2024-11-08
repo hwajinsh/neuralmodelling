@@ -4,9 +4,8 @@ from rescorla_wagner import rescorla_wagner
 
 ## Inhibitory Conditioning
 
-## We need more trials in training and testing (specially in training) so that it
-# does not fluctuate in the beginning and it stabilizes
-
+# Learned Expectations in Inhibitory Conditioning
+# Parameters for the Rescorla-Wagner model
 epsilon = 0.3
 num_trials_training = 100    
 CS1_testing = 1
@@ -28,7 +27,7 @@ predictions_v, weights_1, weights_2 = rescorla_wagner(stimuli_1, stimuli_2, rewa
 testing_1 = weights_1[total_trials - 3] * stimuli_1[total_trials - 2] + weights_2[total_trials - 3] * stimuli_2[total_trials - 2]
 testing_2 = weights_1[total_trials - 3] * stimuli_1[total_trials - 1] + weights_2[total_trials - 3] * stimuli_2[total_trials - 1]
 
-# Ideal expectations in Inhibitory Conditioning: RW model correctly reflects the idealised expectations
+# Idealised Expectations in Inhibitory Conditioning: RW model correctly reflects the idealised expectations
 ideal_expectations = predictions_v
 ideal_weight_1 = weights_1
 ideal_weight_2 = weights_2

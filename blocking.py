@@ -4,12 +4,13 @@ from rescorla_wagner import rescorla_wagner
 
 ## Blocking
 
+# Learned Expectations in Blocking
 # Parameters for the Rescorla-Wagner model
 epsilon = 0.15  # Learning rate for stimuli (CS1, CS2)
 num_trials_pretraining = 100  # Trials in Pre-Training (CS1 only)
 num_trials_training = 100     # Trials in Training (CS1 + CS2)
-CS1_testing = 1
-CS2_testing = 1      
+CS1_testing = 1               # CS1 Test Trial
+CS2_testing = 1               # CS2 Test Trial
 total_trials = num_trials_pretraining + num_trials_training + CS1_testing + CS2_testing
 
 # Stimuli presentation arrays for the three stages
@@ -26,7 +27,7 @@ predictions_v, weights_1, weights_2 = rescorla_wagner(stimuli_1, stimuli_2, rewa
 testing_1 = weights_1[total_trials - 3] * stimuli_1[total_trials - 2] + weights_2[total_trials - 3] * stimuli_2[total_trials - 2]
 testing_2 = weights_1[total_trials - 3] * stimuli_1[total_trials - 1] + weights_2[total_trials - 3] * stimuli_2[total_trials - 1]
 
-# Ideal expectations in blocking: RW model correctly reflects the idealised expectations
+# Idealised Expectations in Blocking: RW model correctly reflects the idealised expectations
 ideal_expectations = predictions_v
 ideal_weight_1 = weights_1
 ideal_weight_2 = weights_2

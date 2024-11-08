@@ -4,6 +4,7 @@ from rescorla_wagner import rescorla_wagner
 
 ## Explaining Away
 
+# Learned Expectations in Explaining Away
 # Parameters for the Rescorla-Wagner model
 epsilon = 0.15
 num_trials_pretraining = 100  # Trials in Pre-Training (CS1 + CS2)
@@ -25,7 +26,7 @@ predictions_v, weights_1, weights_2 = rescorla_wagner(stimuli_1, stimuli_2, rewa
 testing_1 = weights_1[total_trials - 3] * stimuli_1[total_trials - 2] + weights_2[total_trials - 3] * stimuli_2[total_trials - 2]
 testing_2 = weights_1[total_trials - 3] * stimuli_1[total_trials - 1] + weights_2[total_trials - 3] * stimuli_2[total_trials - 1]
 
-# Ideal expectations in explaining away: RW model does not reflect the idealised expectations
+# Idealised Expectations in Explaining Away: RW model does not reflect the idealised expectations
 # Generate 0 to 1 incremental arrays for pre-training and training phases
 x_pretraining = np.linspace(0, 1, num_trials_pretraining)
 x_training = np.linspace(0, 1, num_trials_training)

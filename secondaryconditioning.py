@@ -4,8 +4,7 @@ from rescorla_wagner import rescorla_wagner
 
 ## Secondary Conditioning
 
-# Learned expectations in secondary conditioning
-
+# Learned Expectations in Secondary Conditioning
 # Parameters for the Rescorla-Wagner model
 epsilon = 0.3  # Learning rate for stimuli (CS1, CS2)
 num_trials_pretraining = 100  # Trials in Pre-Training (CS1 only)
@@ -25,20 +24,19 @@ predictions_v, weights_1, weights_2 = rescorla_wagner(stimuli_1, stimuli_2, rewa
 # Testing for CS2
 testing_2 = weights_1[total_trials - 2] * stimuli_1[total_trials - 1] + weights_2[total_trials - 2] * stimuli_2[total_trials - 1]
 
-# Idealised expectations in secondary conditioning
-
+# Idealised Expectations in Secondary Conditioning: RW model does not reflect the idealised expectations
 # Generate 0 to 1 incremental arrays for pre-training and training phases
 x_pretraining = np.linspace(0, 1, num_trials_pretraining)
 x_training = np.linspace(0, 1, num_trials_training)
 
-# Idealizsd exponential functions for Stimulus 1 (Weights 1)
+# Idealised exponential functions for Stimulus 1 (Weights 1)
 weights_1_pretraining = (1 - np.exp(-7 * x_pretraining))  # Exponential growth to 1
 weights_1_training = np.ones(num_trials_training)         # Maintain a plateau at 1
 
 # Combine both phases for Stimulus 1
 idealised_weights_1 = np.concatenate((weights_1_pretraining, weights_1_training))
 
-# Faster growth for Stimulus 2 (Weights 2) so that it predicts the reward by the end of training
+# Idealised exponential functions for Stimulus 2 (Weights 2)
 weights_2_pretraining = np.zeros(num_trials_pretraining)  # 0 during pre-training
 weights_2_training = (1 - np.exp(-7 * x_training))        # Exponential growth to 1
 

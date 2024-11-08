@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 ## Extinction
 
-# Step 1: Define Belief Array
+# Step 1: Define Idealised Belief Array
 
 # 50 trials for conditioning, 50 for extinction, and 1 post-delay
 num_trials = 101
