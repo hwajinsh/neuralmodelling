@@ -31,16 +31,16 @@ testing_2 = weights_1[total_trials - 2] * stimuli_1[total_trials - 1] + weights_
 x_pretraining = np.linspace(0, 1, num_trials_pretraining)
 x_training = np.linspace(0, 1, num_trials_training)
 
-# Idealised exponential functions for Stimulus 1 (Weights 1)
-weights_1_pretraining = (1 - np.exp(-7 * x_pretraining)) # Scales to range from 0 to 1
-weights_1_training = np.ones(num_trials_training)  # Maintain 1 for the entire training phase
+# Idealizsd exponential functions for Stimulus 1 (Weights 1)
+weights_1_pretraining = (1 - np.exp(-7 * x_pretraining))  # Exponential growth to 1
+weights_1_training = np.ones(num_trials_training)         # Maintain a plateau at 1
 
 # Combine both phases for Stimulus 1
 idealised_weights_1 = np.concatenate((weights_1_pretraining, weights_1_training))
 
-# Idealised exponential functions for Stimulus 2 (Weights 2)
-weights_2_pretraining = np.zeros(num_trials_pretraining)  # Zero during pre-training
-weights_2_training = (1 - np.exp(-7 * x_training))  # Exponential growth from 0 to 1 during training
+# Faster growth for Stimulus 2 (Weights 2) so that it predicts the reward by the end of training
+weights_2_pretraining = np.zeros(num_trials_pretraining)  # 0 during pre-training
+weights_2_training = (1 - np.exp(-7 * x_training))        # Exponential growth to 1
 
 # Combine both phases for Stimulus 2
 idealised_weights_2 = np.concatenate((weights_2_pretraining, weights_2_training))
@@ -52,8 +52,8 @@ summed_ideal_expectations = idealised_weights_1 + idealised_weights_2
 plt.figure(figsize=(10, 5))
 plt.plot(idealised_weights_1, label="Weight (Stimulus 1)", color="blue")
 plt.plot(idealised_weights_2, label="Weight (Stimulus 2)", color="orange")
-plt.plot(summed_ideal_expectations, label="Summed Idealised Expectations", color="green", linestyle = "--")
-plt.plot((total_trials), idealised_weights_2[199], 'o', label="Test (Stimulus 2)", color="orange")
+plt.plot(summed_ideal_expectations, label="Summed Idealised Expectations", color="green", linestyle="--")
+plt.plot(total_trials, idealised_weights_2[-1], 'o', label="Test (Stimulus 2)", color="orange")
 plt.xlabel("Trials")
 plt.ylabel("Expectations")
 plt.title("Idealised Expectations for Secondary Conditioning Across Trials")
