@@ -10,7 +10,7 @@ from rescorla_wagner import rescorla_wagner
 epsilon = 0.3  # Learning rate for stimuli (CS1, CS2)
 num_trials_pretraining = 100  # Trials in Pre-Training (CS1 only)
 num_trials_training = 100     # Trials in Training (CS1 + CS2)
-CS2_testing = 1
+CS2_testing = 1               # CS2 Test Trial
 
 total_trials = num_trials_pretraining + num_trials_training + CS2_testing
 
@@ -22,23 +22,23 @@ rewards = np.concatenate([np.ones(num_trials_pretraining), np.zeros(num_trials_t
 # Apply Rescorla-Wagner rule
 predictions_v, weights_1, weights_2 = rescorla_wagner(stimuli_1, stimuli_2, rewards, epsilon)
 
-# Testing
+# Testing for CS2
 testing_2 = weights_1[total_trials - 2] * stimuli_1[total_trials - 1] + weights_2[total_trials - 2] * stimuli_2[total_trials - 1]
 
 # Idealised expectations in secondary conditioning
 
-# Generate exponential growth for Stimulus 1 during both phases
+# Generate 0 to 1 incremental arrays for pre-training and training phases
 x_pretraining = np.linspace(0, 1, num_trials_pretraining)
 x_training = np.linspace(0, 1, num_trials_training)
 
-# Idealized exponential functions for Stimulus 1 (Weights 1)
+# Idealised exponential functions for Stimulus 1 (Weights 1)
 weights_1_pretraining = (1 - np.exp(-7 * x_pretraining)) # Scales to range from 0 to 1
 weights_1_training = np.ones(num_trials_training)  # Maintain 1 for the entire training phase
 
 # Combine both phases for Stimulus 1
 idealised_weights_1 = np.concatenate((weights_1_pretraining, weights_1_training))
 
-# Idealized exponential functions for Stimulus 2 (Weights 2)
+# Idealised exponential functions for Stimulus 2 (Weights 2)
 weights_2_pretraining = np.zeros(num_trials_pretraining)  # Zero during pre-training
 weights_2_training = (1 - np.exp(-7 * x_training))  # Exponential growth from 0 to 1 during training
 
@@ -48,7 +48,7 @@ idealised_weights_2 = np.concatenate((weights_2_pretraining, weights_2_training)
 # Summed ideal expectations
 summed_ideal_expectations = idealised_weights_1 + idealised_weights_2
 
-# Plot 1: Idealised Expectations for Inhibitory Conditioning Across Trials
+# Plot 1: Idealised Expectations for Secondary Conditioning Across Trials
 plt.figure(figsize=(10, 5))
 plt.plot(idealised_weights_1, label="Weight (Stimulus 1)", color="blue")
 plt.plot(idealised_weights_2, label="Weight (Stimulus 2)", color="orange")
@@ -61,7 +61,7 @@ plt.legend()
 plt.grid(True)
 plt.show()
 
-# Plot 2: Learned Expectations for Inhibitory Conditioning Across Trials
+# Plot 2: Learned Expectations for Secondary Conditioning Across Trials
 plt.figure(figsize=(10, 5))
 plt.plot(weights_1, label="Weight (Stimulus 1)", color="blue")
 plt.plot(weights_2, label="Weight (Stimulus 2)", color="orange")
