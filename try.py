@@ -1,9 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 # Define parameters for the TD model
 num_trials = 100
-time_steps = 250
+time_steps = 300
 reward_time = 200
 stimulus_time = 100
 learning_rate = 0.1
@@ -29,17 +30,18 @@ for trial in range(num_trials):
     for t in range(time_steps - 1):  # Avoid out of range error
         # Calculate prediction error (TD error)
         delta[t] = r[t] + v[t + 1] - v[t] if t < time_steps - 1 else r[t] - v[t]
-        
+
         # Update weights (w(tau)) for each time step using the learning rule
         for tau in range(t + 1):  # Loop over all previous time steps (stimulus influence)
             w[tau] += learning_rate * delta[t] * u[t - tau] if t - tau >= 0 else 0
         
         # Update prediction using weights (for future rewards)
         # Manually accumulate the weighted sum of all past stimuli up to the current time step
-        if t < reward_time:  # Only predict before the reward is delivered
-            v[t + 1] = np.sum(w[:t + 1] * u[:t + 1])  # Prediction based on all previous stimuli
+        if t < reward_time:
+            v[t + 1] = np.sum(w[:t + 1] * u[:t + 1])
         else:
-            v[t + 1] = 0  # No prediction after reward is delivered (t >= reward_time)
+            v[t + 1] = 0  # This makes predictions stop right at reward time
+
 
     # Store early and late values for plotting
     if trial == 0:
@@ -52,6 +54,7 @@ delta_v_early = np.diff(v_early, prepend=0)
 delta_v_late = np.diff(v_late, prepend=0)
 delta_early = r + delta_v_early
 delta_late = r + delta_v_late
+
 
 # Plotting
 fig, ax = plt.subplots(5, 2, figsize=(12, 10))
