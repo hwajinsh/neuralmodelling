@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 # Define parameters for the TD model
 num_trials = 100
-time_steps = 300
+time_steps = 250
 reward_time = 200
 stimulus_time = 100
 learning_rate = 0.1
