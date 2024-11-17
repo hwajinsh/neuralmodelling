@@ -122,6 +122,7 @@ for i in range(5001):
     if i in [0, 10, 100, 1000, 5000]:
         plot_maze(maze)
         plt.imshow(succ_repr, cmap='hot')
+        plt.colorbar(label="Success Representation")  # Add color legend
         # if i == 5000:
         #     plt.savefig("empirical")
         plt.show()
@@ -129,7 +130,9 @@ for i in range(5001):
 print(succ_repr)
 
 
-#############################################333
+####################################
+############## Part 3 ##############
+####################################
 
 def compute_transition_matrix(maze):
     # Get maze dimensions
@@ -189,3 +192,111 @@ transition_matrix = compute_transition_matrix(maze)
 
 # To visualize or check the transition matrix
 print(transition_matrix)
+size = np.shape(transition_matrix)
+print(size)
+
+
+####################################
+############## Part 4 ##############
+####################################
+
+
+def compute_sr(transitions, i, j, gamma=0.98):
+    """
+    Compute the successor representation for a given start state (i, j)
+    using the transition matrix and discount factor gamma.
+    
+    Args:
+        transitions (numpy array): Transition matrix.
+        i (int): Row index of the start state.
+        j (int): Column index of the start state.
+        gamma (float): Discount factor.
+    
+    Returns:
+        numpy array: Successor representation reshaped to the maze size.
+    """
+    # Get maze size from transitions
+    num_states = transitions.shape[0]
+    
+    # Initialize the current discounted occupancy vector
+    current_discounted_occupancy = np.zeros(num_states)
+    
+    # Convert the (i, j) start position into its flattened index
+    start_index = i * maze.shape[1] + j
+    current_discounted_occupancy[start_index] = 1  # Start state is fully occupied initially
+    
+    # Initialize the total SR vector
+    total = np.zeros_like(current_discounted_occupancy)
+    
+    # Iterate for a number of steps to simulate long-term behavior
+    for _ in range(340):
+        # Update total SR with current discounted occupancy
+        total += current_discounted_occupancy
+        
+        # Compute next occupancy by applying the transition matrix
+        current_discounted_occupancy = gamma * np.dot(transitions, current_discounted_occupancy)
+    
+    # Reshape the total SR vector back into the maze shape
+    return total.reshape(maze.shape)
+
+# Compute state representation for start state
+i, j = start
+sr = compute_sr(transition_matrix, i, j, gamma=0.98)
+
+# Plot state representation
+plot_maze(maze)
+plt.imshow(sr, cmap='hot')
+plt.colorbar(label="Successor Representation")
+# plt.savefig("transition_iterate")
+plt.show()
+
+
+
+############################################
+############## Part 5 (Bonus) ##############
+############################################
+
+def compute_sr_analytical(transitions, gamma=0.98):
+    """
+    Compute the successor representation matrix using the analytical solution.
+    
+    Args:
+        transitions (numpy array): Transition matrix.
+        gamma (float): Discount factor.
+    
+    Returns:
+        numpy array: Successor representation matrix.
+    """
+    num_states = transitions.shape[0]
+    identity = np.eye(num_states)
+    
+    # Compute (I - gamma * T)^(-1)
+    sr_matrix = np.linalg.inv(identity - gamma * transitions)
+    
+    return sr_matrix
+
+# Compute the successor representation for all states
+sr_matrix = compute_sr_analytical(transition_matrix, gamma=0.98)
+
+# Extract and plot SR for the start state
+start_index = start[0] * maze.shape[1] + start[1]
+sr_start = sr_matrix[start_index].reshape(maze.shape)
+
+# Plot SR for the start state
+plot_maze(maze)
+plt.imshow(sr_start, cmap='hot')
+plt.colorbar(label="Successor Representation (Start State)")
+plt.title("SR for Start State")
+plt.show()
+
+# Extract and plot SR for the state 2 steps to the left of the start
+opposite_state = (start[0], start[1] - 2)
+opposite_index = opposite_state[0] * maze.shape[1] + opposite_state[1]
+sr_opposite = sr_matrix[opposite_index].reshape(maze.shape)
+
+# Plot SR for the opposite state
+plot_maze(maze)
+plt.imshow(sr_opposite, cmap='hot')
+plt.colorbar(label="Successor Representation (Opposite State)")
+plt.title("SR for Opposite State (2 Steps Left of Start)")
+plt.show()
