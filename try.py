@@ -27,19 +27,18 @@ v_late = np.zeros(time_steps)   # Prediction after learning
 for trial in range(num_trials):
     # Temporal difference learning: Update predictions
     for t in range(time_steps - 1):  # Avoid out of range error
-        # Calculate prediction error (TD error)
-        delta[t] = r[t] + v[t + 1] - v[t] if t < time_steps - 1 else r[t] - v[t]
-        
-        # Update weights (w(tau)) for each time step using the learning rule
+    # Update weights (w(tau)) for each time step using the learning rule
         for tau in range(t + 1):  # Loop over all previous time steps (stimulus influence)
             w[tau] += learning_rate * delta[t] * u[t - tau] if t - tau >= 0 else 0
-        
-        # Update prediction using weights (for future rewards)
-        # Manually accumulate the weighted sum of all past stimuli up to the current time step
-        if t < reward_time:  # Only predict before the reward is delivered
-            v[t + 1] = np.sum(w[:t + 1] * u[:t + 1])  # Prediction based on all previous stimuli
+
+        # Update prediction for the next time step
+        v[t + 1] = np.sum(w[:t + 1] * u[:t + 1])  # Prediction based on all previous stimuli
+
+        # Calculate TD error (delta) AFTER updating predictions
+        if t < time_steps - 1:
+            delta[t] = r[t] + v[t + 1] - v[t]  # Standard TD update
         else:
-            v[t + 1] = 0  # No prediction after reward is delivered (t >= reward_time)
+            delta[t] = r[t] - v[t]  # Final timestep: No future prediction
 
     # Store early and late values for plotting
     if trial == 0:
