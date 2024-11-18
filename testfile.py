@@ -1,9 +1,5 @@
-# Option 2
-
 import numpy as np
 import matplotlib.pyplot as plt
-
-## Secondary Conditioning
 
 # Define parameters for the TD model
 num_trials = 100
@@ -17,6 +13,7 @@ u = np.zeros(time_steps)  # Stimulus
 r = np.zeros(time_steps)  # Reward
 v = np.zeros(time_steps)  # Prediction
 delta = np.zeros(time_steps)  # Prediction error (TD error)
+w = np.zeros(time_steps)  # Weights
 
 # Set stimulus and reward signals
 u[stimulus_time] = 1  # Stimulus presented at time step 100
@@ -28,12 +25,22 @@ v_late = np.zeros(time_steps)   # Prediction after learning
 
 # Run learning for multiple trials to simulate learning effects
 for trial in range(num_trials):
-    for t in range(time_steps - 1):
+    # Temporal difference learning: Update predictions
+    for t in range(time_steps - 1):  # Avoid out of range error
         # Calculate prediction error (TD error)
-        delta[t] = r[t] + v[t + 1] - v[t]
-        # Update prediction based on TD error
-        v[t] += learning_rate * delta[t]
-    
+        delta[t] = r[t] + v[t + 1] - v[t] if t < time_steps - 1 else r[t] - v[t]
+        
+        # Update weights (w(tau)) for each time step using the learning rule
+        for tau in range(t + 1):  # Loop over all previous time steps (stimulus influence)
+            w[tau] += learning_rate * delta[t] * u[t - tau] if t - tau >= 0 else 0
+        
+        # Update prediction using weights (for future rewards)
+        # Manually accumulate the weighted sum of all past stimuli up to the current time step
+        if t < reward_time:  # Only predict before the reward is delivered
+            v[t + 1] = np.sum(w[:t + 1] * u[:t + 1])  # Prediction based on all previous stimuli
+        else:
+            v[t + 1] = 0  # No prediction after reward is delivered (t >= reward_time)
+
     # Store early and late values for plotting
     if trial == 0:
         v_early = v.copy()
@@ -78,3 +85,4 @@ for i in range(5):
 # Display plot
 fig.tight_layout()
 plt.show()
+
