@@ -23,7 +23,7 @@ r[reward_time] = 1    # Reward presented at time step 200
 
 # Reward should be a gaussian with integral set to 2 (multiply gaussian by 2)
 # Define Gaussian filter and apply it
-sigma = 10  # Standard deviation for Gaussian
+sigma = 5  # Standard deviation for Gaussian
 r = gaussian_filter1d(r, sigma)
 
 # Normalize to sum to 2
@@ -46,6 +46,7 @@ for trial in range(num_trials):
         
         # Update prediction using weighted sum of stimuli
         v[t + 1] = np.sum(w[:t + 1] * u[:t + 1])  # Weighted sum at step t+1
+
     
     # Store v and delta for this trial
     v_all_trials[trial] = v.copy()
@@ -57,7 +58,7 @@ X, Y = np.meshgrid(np.arange(time_steps), np.arange(num_trials))  # X: Time step
 # Use the already computed delta values (prediction error, stored in delta_all_trials)
 # delta_all_trials already contains the TD error (delta)
 
-# Plotting
+# Plotting 3D
 fig = plt.figure(figsize=(12, 8))
 ax = fig.add_subplot(111, projection='3d')
 
@@ -74,6 +75,38 @@ ax.set_title('3D Plot of Time Steps, Trials, and Prediction Error (δ)')
 plt.show()
 
 
+# Plotting 2D
+fig, ax = plt.subplots(5, 2, figsize=(12, 10))
+
+# "Before Training" (Early Trial) - trial 0
+ax[0, 0].plot(u, label="u (Stimulus)", color="black")
+ax[1, 0].plot(r, label="r (Reward)", color="blue")
+ax[2, 0].plot(v_all_trials[0], label="v (Prediction)", color="orange")  # Early Trial
+ax[3, 0].plot(np.diff(v_all_trials[0], prepend=0), label="Δv", color="purple")  # Early Δv
+ax[4, 0].plot(delta_all_trials[0], label="δ (TD Error)", color="red")  # Early δ
+
+# Titles and labels for before training
+ax[0, 0].set_title("Before Training")
+for i in range(5):
+    ax[i, 0].legend(loc="upper right")
+    ax[i, 0].set_xlim([0, time_steps])
+
+# "After Training" (Late Trial) - last trial
+ax[0, 1].plot(u, label="u (Stimulus)", color="black")
+ax[1, 1].plot(r, label="r (Reward)", color="blue")
+ax[2, 1].plot(v_all_trials[-1], label="v (Prediction)", color="orange")  # Late Trial
+ax[3, 1].plot(np.diff(v_all_trials[-1], prepend=0), label="Δv", color="purple")  # Late Δv
+ax[4, 1].plot(delta_all_trials[-1], label="δ (TD Error)", color="red")  # Late δ
+
+# Titles and labels for after training
+ax[0, 1].set_title("After Training")
+for i in range(5):
+    ax[i, 1].legend(loc="upper right")
+    ax[i, 1].set_xlim([0, time_steps])
+
+# Display plot
+fig.tight_layout()
+plt.show()
 
 
 
