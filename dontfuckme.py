@@ -1,3 +1,11 @@
+# S: 1
+# R: Gaussian with integral equal to 2 (within a set timeframe) 
+# -> scipy.nd.image import gaussian filter
+# -> V should also converge to 2
+# Stochastic R: Stochasticity around the time / presence of reward 
+# -> we can play around with it and explain each stochasticity as needed
+# Maze: predition error should be represented in the maze in the same way as TD learning 
+
 class TraceConditioning:
     def __init__(self, n_trials, trial_length, cs_time, reward_time, reward_magnitude):
         # Task variables
@@ -85,7 +93,7 @@ n_trials = 100
 trial_length = 300
 cs_time = 100
 reward_time = 200
-reward_magnitude = 1
+reward_magnitude = # R: Gaussian with integral equal to 2 (within a set timeframe) -> scipy.nd.image import gaussian filter
 
 # Create the environment
 trace_env = TraceConditioning(n_trials, trial_length, cs_time, reward_time, reward_magnitude)

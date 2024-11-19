@@ -1,3 +1,5 @@
+# I might make rando comments on this file to understand what's going on
+
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -91,8 +93,6 @@ def learn_from_traj(succ_repr, trajectory, gamma=0.98, alpha=0.02):
     Returns:
         numpy array: Updated successor representation.
     """
-    # Get the starting state from the trajectory (this is the state to learn from)
-    start_state = trajectory[0]
     
     # Iterate over the trajectory, updating the successor representation
     for t, state in enumerate(trajectory):
@@ -101,8 +101,6 @@ def learn_from_traj(succ_repr, trajectory, gamma=0.98, alpha=0.02):
         
         # Update the SR for the state by adding the discounted value
         succ_repr[state] += alpha * discount
-
-        # exponential decrease by multiplying by discount factor
     
     return succ_repr
 
