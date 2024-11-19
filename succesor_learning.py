@@ -105,6 +105,8 @@ def learn_from_traj(succ_repr, trajectory, gamma=0.98, alpha=0.02):
         
         # Update the SR for the state by adding the discounted value
         succ_repr[state] += alpha * discount
+
+        # exponential decrease by multiplying by discount factor
     
     return succ_repr
 
