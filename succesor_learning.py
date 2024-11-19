@@ -30,11 +30,9 @@ plt.tight_layout()
 # plt.savefig('maze.png')
 plt.show()
 
-
 ####################################
 ############## Part 1 ##############
 ####################################
-
 
 def random_walk(maze, start, n_steps):
     # Initialize list to store positions
@@ -74,8 +72,6 @@ def plot_path(maze, path):
 # Plot a random path
 path = random_walk(maze, start, 40)
 plot_path(maze, path)
-
-
 
 ####################################
 ############## Part 2 ##############
@@ -128,7 +124,6 @@ for i in range(5001):
         plt.show()
 
 print(succ_repr)
-
 
 ####################################
 ############## Part 3 ##############
@@ -195,11 +190,9 @@ print(transition_matrix)
 size = np.shape(transition_matrix)
 print(size)
 
-
 ####################################
 ############## Part 4 ##############
 ####################################
-
 
 def compute_sr(transitions, i, j, gamma=0.98):
     """
@@ -249,8 +242,6 @@ plt.imshow(sr, cmap='hot')
 plt.colorbar(label="Successor Representation")
 # plt.savefig("transition_iterate")
 plt.show()
-
-
 
 ############################################
 ############## Part 5 (Bonus) ##############

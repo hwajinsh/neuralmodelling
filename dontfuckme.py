@@ -1,3 +1,7 @@
+# S: 1
+# R: Gaussian with integral equal to 2
+# 
+
 class TraceConditioning:
     def __init__(self, n_trials, trial_length, cs_time, reward_time, reward_magnitude):
         # Task variables
@@ -85,7 +89,7 @@ n_trials = 100
 trial_length = 300
 cs_time = 100
 reward_time = 200
-reward_magnitude = 1
+reward_magnitude = 
 
 # Create the environment
 trace_env = TraceConditioning(n_trials, trial_length, cs_time, reward_time, reward_magnitude)
