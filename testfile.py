@@ -45,7 +45,7 @@ for trial in range(num_trials):
             w[tau] += learning_rate * delta[t] * u[t - tau]
         
         # Update prediction using weighted sum of stimuli
-        v[t + 1] = np.sum(w[:t + 1] * u[:t + 1])  # Weighted sum at step t+1
+            v[t + 1] = np.sum(w[tau] * u[t - tau])  # Weighted sum at step t+1
     
     # Store v and delta for this trial
     v_all_trials[trial] = v.copy()
