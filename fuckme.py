@@ -1,6 +1,50 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+from matplotlib import ticker
+
+def plot_value_function(V, ax=None, show=True):
+  """Plot V(s), the value function"""
+  if not ax:
+    fig, ax = plt.subplots()
+
+  ax.stem(V)
+  ax.set_ylabel('Value')
+  ax.set_xlabel('State')
+  ax.set_title("Value function: $V(s)$")
+
+  if show:
+    plt.show()
+
+
+def plot_tde_trace(TDE, ax=None, show=True, skip=400):
+  """Plot the TD Error across trials"""
+  if not ax:
+    fig, ax = plt.subplots()
+
+  indx = np.arange(0, TDE.shape[1], skip)
+  im = ax.imshow(TDE[:,indx])
+  positions = ax.get_xticks()
+  # Avoid warning when setting string tick labels
+  ax.xaxis.set_major_locator(ticker.FixedLocator(positions))
+  ax.set_xticklabels([f"{int(skip * x)}" for x in positions])
+  ax.set_title('TD-error over learning')
+  ax.set_ylabel('State')
+  ax.set_xlabel('Iterations')
+  ax.figure.colorbar(im)
+  if show:
+    plt.show()
+
+
+def learning_summary_plot(V, TDE):
+  """Summary plot for Ex1"""
+  fig, (ax1, ax2) = plt.subplots(nrows = 2, gridspec_kw={'height_ratios': [1, 2]})
+
+  plot_value_function(V, ax=ax1, show=False)
+  plot_tde_trace(TDE, ax=ax2, show=False)
+  plt.tight_layout()
+  plt.show()
+
 class ClassicalConditioning:
 
     def __init__(self, n_steps, reward_magnitude, reward_time):
@@ -158,25 +202,3 @@ env = ClassicalConditioning(n_steps=40, reward_magnitude=10, reward_time=10)
 
 # Perform temporal difference learning
 V, TDE = td_learner(env, n_trials=20000)
-
-n_trials = 20000
-
-def plot_tde_by_trial(trial = widgets.IntSlider(value=5000, min=0, max=n_trials-1 , step=1, description="Trial #")):
-  if 'TDE' not in globals():
-    print("Complete Exercise 1 to enable this interactive demo!")
-  else:
-
-    fig, ax = plt.subplots()
-    ax.axhline(0, color='k') # Use this + basefmt=' ' to keep the legend clean.
-    ax.stem(TDE[:, 0], linefmt='C1-', markerfmt='C1d', basefmt=' ',
-            label="Before Learning (Trial 0)")
-    ax.stem(TDE[:, -1], linefmt='C2-', markerfmt='C2s', basefmt=' ',
-            label=r"After Learning (Trial $\infty$)")
-    ax.stem(TDE[:, trial], linefmt='C0-', markerfmt='C0o', basefmt=' ',
-            label=f"Trial {trial}")
-
-    ax.set_xlabel("State in trial")
-    ax.set_ylabel("TD Error")
-    ax.set_title("Temporal Difference Error by Trial")
-    ax.legend()
-    plt.show()
