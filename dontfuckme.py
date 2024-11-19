@@ -4,7 +4,7 @@
 # -> V should also converge to 2
 # Stochastic R: Stochasticity around the time / presence of reward 
 # -> we can play around with it and explain each stochasticity as needed
-# Maze: predition error should be represented in the maze in the same way as TD learning 
+# Maze: prediction error should be represented in the maze question as well
 
 class TraceConditioning:
     def __init__(self, n_trials, trial_length, cs_time, reward_time, reward_magnitude):
