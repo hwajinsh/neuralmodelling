@@ -37,6 +37,9 @@ plt.show()
 ####################################
 
 def random_walk(maze, start, n_steps):
+    # perform a single random walk in the given maze, starting from start, performing n_steps random moves
+    # moves into the wall and out of the maze boundary are not possible
+
     # Initialize list to store positions
     positions = [start]
 
@@ -107,23 +110,42 @@ def learn_from_traj(succ_repr, trajectory, gamma=0.98, alpha=0.02):
 # initialize successor representation
 succ_repr = np.zeros_like(maze)
 
-# sample a whole bunch of trajectories (reduce this number if this code takes too long, but it shouldn't take longer than a minute with reasonable code)
+# Plot the successor representation with values
 for i in range(5001):
-    # sample a path (we use 340 steps here to sample states until the discounting becomes very small)
+    # Sample a path
     path = random_walk(maze, start, 340)
-    # update the successor representation
-    succ_repr = learn_from_traj(succ_repr, path, alpha=0.02)  # choose a small learning rate
+    # Update the successor representation
+    succ_repr = learn_from_traj(succ_repr, path, alpha=0.02)
 
-    # occasionally plot it
+    # Occasionally plot it
     if i in [0, 10, 100, 1000, 5000]:
         plot_maze(maze)
-        plt.imshow(succ_repr, cmap='hot')
-        plt.colorbar(label="Success Representation")  # Add color legend
-        # if i == 5000:
-        #     plt.savefig("empirical")
+        heatmap = plt.imshow(succ_repr, cmap='hot')
+        plt.colorbar(label="Successor Representation")
+        for row in range(succ_repr.shape[0]):
+            for col in range(succ_repr.shape[1]):
+                plt.text(
+                    col, row, f"{succ_repr[row, col]:.2f}", 
+                    ha='center', va='center', fontsize=8, color='black'
+                )
+        plt.title(f"Iteration {i}")
         plt.show()
 
 print(succ_repr)
+
+# Track the growth of the SR matrix by plotting the sum of all its elements at each iteration
+total_sr_values = []
+
+for i in range(5001):
+    path = random_walk(maze, start, 340)
+    succ_repr = learn_from_traj(succ_repr, path, alpha=0.02)
+    total_sr_values.append(np.sum(succ_repr))  # Sum of SR matrix
+
+plt.plot(total_sr_values)
+plt.xlabel("Iteration")
+plt.ylabel("Total SR Value")
+plt.title("Convergence of Successor Representation")
+plt.show()
 
 ####################################
 ############## Part 3 ##############
@@ -222,6 +244,7 @@ def compute_sr(transitions, i, j, gamma=0.98):
     total = np.zeros_like(current_discounted_occupancy)
     
     # Iterate for a number of steps to simulate long-term behavior
+    # ??? is the loop operating if none is taking _ in range(340)?
     for _ in range(340):
         # Update total SR with current discounted occupancy
         total += current_discounted_occupancy
@@ -236,11 +259,17 @@ def compute_sr(transitions, i, j, gamma=0.98):
 i, j = start
 sr = compute_sr(transition_matrix, i, j, gamma=0.98)
 
-# Plot state representation
+# Plot state representation for the start state
 plot_maze(maze)
-plt.imshow(sr, cmap='hot')
+heatmap = plt.imshow(sr, cmap='hot')
 plt.colorbar(label="Successor Representation")
-# plt.savefig("transition_iterate")
+for row in range(sr.shape[0]):
+    for col in range(sr.shape[1]):
+        plt.text(
+            col, row, f"{sr[row, col]:.2f}", 
+            ha='center', va='center', fontsize=8, color='black'
+        )
+plt.title("SR for Start State")
 plt.show()
 
 ############################################
@@ -277,6 +306,12 @@ sr_start = sr_matrix[start_index].reshape(maze.shape)
 plot_maze(maze)
 plt.imshow(sr_start, cmap='hot')
 plt.colorbar(label="Successor Representation (Start State)")
+for row in range(sr_start.shape[0]):
+    for col in range(sr_start.shape[1]):
+        plt.text(
+            col, row, f"{sr_start[row, col]:.2f}", 
+            ha='center', va='center', fontsize=8, color='black'
+        )
 plt.title("SR for Start State")
 plt.show()
 
@@ -289,5 +324,11 @@ sr_opposite = sr_matrix[opposite_index].reshape(maze.shape)
 plot_maze(maze)
 plt.imshow(sr_opposite, cmap='hot')
 plt.colorbar(label="Successor Representation (Opposite State)")
+for row in range(sr_opposite.shape[0]):
+    for col in range(sr_opposite.shape[1]):
+        plt.text(
+            col, row, f"{sr_opposite[row, col]:.2f}", 
+            ha='center', va='center', fontsize=8, color='black'
+        )
 plt.title("SR for Opposite State (2 Steps Left of Start)")
 plt.show()
